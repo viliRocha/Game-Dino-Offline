@@ -67,23 +67,26 @@ function preload(){
     function setup() {
         createCanvas(windowWidth,windowHeight);
       
-        texTrex.frameDelay = 2;
+        texTrex.frameDelay = 4;
           
-        trex = new Sprite(80, windowHeight-30, 20, 20)
+        trex = createSprite(80, windowHeight-150, 20, 20)
           trex.addAnimation("topTrex",texTrex);
           trex.addAnimation("legalTrex", agachaTrex);
           trex.addImage("falecido", collided);
           trex.scale = 1
       
-        ground = new Sprite(windowWidth/2,windowHeight-20, windowWidth, 50);
+        ground = createSprite(windowWidth/2,windowHeight-20, windowWidth, 50);
       ground.addImage("chaoFirme", texGround);
       ground.scale = 0.9
-      //ground.debug = true;
-      ground.setCollider("rectangle", 0, 10, ground.width, 20)
+      ground.debug = true;
 
-      chaoDaGambiarra = new Sprite(windowWidth/2,windowHeight+150, windowWidth, 50);
+      ground.width = windowWidth;
+      ground.heigth = 20;
+      //ground.setCollider("rectangle", 0, 10, ground.width, 20);
+
+      chaoDaGambiarra = createSprite(windowWidth/2,windowHeight+150, windowWidth, 50);
       
-      Lua = new Sprite(windowWidth/2 + 300,windowHeight/2 - 150, 50, 50);
+      Lua = createSprite(windowWidth/2 + 300,windowHeight/2 - 150, 50, 50);
       Lua.addImage("luaCheia", texLua);
       Lua.scale = 0.2
       Lua.visible = false;
@@ -97,7 +100,7 @@ function preload(){
       function draw() {
         background(bg); 
       
-      ground.velocityX = -20;
+      ground.velocityX = -100;
       
       
       if(gameState == "start"){
@@ -133,7 +136,7 @@ function preload(){
         if(trex.collide(obstacleGroup)){
          trex.changeImage("falecido", collided);
 
-          texGameOver = new Sprite(windowWidth/2, 300, 200, windowWidth)
+          texGameOver = createSprite(windowWidth/2, 300, 200, windowWidth)
           texGameOver.addImage("youAreDead", gameOver)
 
           gameState = "end";
@@ -141,12 +144,12 @@ function preload(){
          if(trex.collide(dinossourGroup)){
           trex.changeImage("falecido", collided);
 
-          texGameOver = new Sprite(windowWidth/2, 300, 200, windowWidth)
+          texGameOver = createSprite(windowWidth/2, 300, 200, windowWidth)
           texGameOver.addImage("youAreDead", gameOver);
 
           gameState = "end";
         }
-
+        /*
         if(keyDown("up") && trex.y >= windowHeight - 75){
         
           trex.velocityY=-16
@@ -156,6 +159,17 @@ function preload(){
         else if(keyDown("down")){
           trex.changeAnimation("legalTrex", agachaTrex);
         }
+*/
+        document.onkeydown = function(event) {
+          if (event.keyCode == 38 && trex.y >= windowHeight - 75) {
+            trex.velocityY=-16
+  
+            jumpSound.play();
+          }
+          else if(event.keyCode == 40){
+            trex.changeAnimation("legalTrex", agachaTrex);
+          }
+        };
       }
       
       if(gameState == "end"){
@@ -170,8 +184,11 @@ function preload(){
       dinossourGroup.setLifetimeEach(-1);
       dinossourGroup.setLifetimeEach(-1);
 
-      trex.velocityX = 0;
-      trex.velocityY =-30;
+      
+      //trex.velocityX = 0;
+      //trex.velocityY =-1000;
+      trex.velocity.y = 30;
+      
 
       recomecar = createImg("assets/restart.png");
       recomecar.position(windowWidth/2, windowHeight/2);
@@ -191,7 +208,7 @@ function preload(){
       
       trex.collide(chaoDaGambiarra);
       
-      trex.velocityY = trex.velocityY + 1
+      trex.velocity.y = trex.velocity.y + 1
       
       if(ground.x <= -windowWidth + 500){
         ground.x = ground.width/3
@@ -202,7 +219,7 @@ function preload(){
       text(score, windowWidth - 1300, windowHeight - 600)
       text("Your maximun score: " + maximunScore, windowWidth - 500,windowHeight - 600)
       
-        drawSprites();
+        //drawSprites();
       }
 
 
@@ -217,7 +234,7 @@ function preload(){
       function cloudsney() {
 
         if(frameCount % 20 == 0){
-        sky = new Sprite(windowWidth + 30, random(100, 500), 100, 100);
+        sky = createSprite(windowWidth + 30, random(100, 500), 100, 100);
         sky.addImage("claison", texSky);
 
         sky.velocityX = -13;
@@ -232,7 +249,7 @@ function preload(){
 
         if(frameCount % 35 == 0){
 
-          objObstacle1 = new Sprite(windowWidth + 30, windowHeight - 50, 50, 70);
+          objObstacle1 = createSprite(windowWidth + 30, windowHeight - 50, 50, 70);
 
       objObstacle1.velocityX = -20;
       objObstacle1.lifetime = 80;
@@ -270,7 +287,7 @@ function preload(){
 
           texDinossour.frameDelay = 10;
 
-          dinossour = new Sprite(windowWidth + 30, random(dinnoPos), 100, 100);
+          dinossour = createSprite(windowWidth + 30, random(dinnoPos), 100, 100);
           dinossour.addAnimation("voando", texDinossour);
 
           dinossour.velocityX = -25;
