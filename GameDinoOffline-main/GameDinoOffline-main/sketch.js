@@ -35,6 +35,9 @@ var bg = 156;
 var gameState = "start";
 var horario = "dia";
 
+var jumpSound;
+var collideSound;
+
 
 function preload(){
     texGround = loadImage("assets/ground2.png");
@@ -48,11 +51,13 @@ function preload(){
     obstacle4 = loadImage("assets/obstacle4.png");
     obstacle5 = loadImage("assets/obstacle5.png");
     obstacle6 = loadImage("assets/obstacle6.png");
-    
+
       texTrex = loadAnimation("assets/trex1.png", "assets/trex2.png", "assets/trex3.png", "assets/trex4.png");
       agachaTrex = loadAnimation("assets/TrexDown1.png", "assets/TrexDown2.png");
       texDinossour = loadAnimation("assets/bird1.png", "assets/bird2.png");
-    
+
+      jumpSound = loadSound("collided.wav");
+      collideSound = loadSound("jump.wav");
       texTrex.playing = true;
       agachaTrex.playing = true;
       texDinossour.playing = true;
@@ -64,21 +69,21 @@ function preload(){
       
         texTrex.frameDelay = 2;
           
-        trex = createSprite(80, windowHeight-30, 20, 20)
+        trex = new Sprite(80, windowHeight-30, 20, 20)
           trex.addAnimation("topTrex",texTrex);
           trex.addAnimation("legalTrex", agachaTrex);
           trex.addImage("falecido", collided);
           trex.scale = 1
       
-        ground = createSprite(windowWidth/2,windowHeight-20, windowWidth, 50);
+        ground = new Sprite(windowWidth/2,windowHeight-20, windowWidth, 50);
       ground.addImage("chaoFirme", texGround);
       ground.scale = 0.9
       //ground.debug = true;
       ground.setCollider("rectangle", 0, 10, ground.width, 20)
 
-      chaoDaGambiarra = createSprite(windowWidth/2,windowHeight+150, windowWidth, 50);
+      chaoDaGambiarra = new Sprite(windowWidth/2,windowHeight+150, windowWidth, 50);
       
-      Lua = createSprite(windowWidth/2 + 300,windowHeight/2 - 150, 50, 50);
+      Lua = new Sprite(windowWidth/2 + 300,windowHeight/2 - 150, 50, 50);
       Lua.addImage("luaCheia", texLua);
       Lua.scale = 0.2
       Lua.visible = false;
@@ -128,7 +133,7 @@ function preload(){
         if(trex.collide(obstacleGroup)){
          trex.changeImage("falecido", collided);
 
-          texGameOver = createSprite(windowWidth/2, 300, 200, windowWidth)
+          texGameOver = new Sprite(windowWidth/2, 300, 200, windowWidth)
           texGameOver.addImage("youAreDead", gameOver)
 
           gameState = "end";
@@ -136,14 +141,26 @@ function preload(){
          if(trex.collide(dinossourGroup)){
           trex.changeImage("falecido", collided);
 
-          texGameOver = createSprite(windowWidth/2, 300, 200, windowWidth)
+          texGameOver = new Sprite(windowWidth/2, 300, 200, windowWidth)
           texGameOver.addImage("youAreDead", gameOver);
 
           gameState = "end";
         }
+
+        if(keyDown("up") && trex.y >= windowHeight - 75){
+        
+          trex.velocityY=-16
+  
+          jumpSound.play();
+        }
+        else if(keyDown("down")){
+          trex.changeAnimation("legalTrex", agachaTrex);
+        }
       }
       
       if(gameState == "end"){
+
+        collideSound.play();
 
       obstacleGroup.setVelocityXEach(0);
       skyGroup.setVelocityXEach(0);
@@ -176,14 +193,6 @@ function preload(){
       
       trex.velocityY = trex.velocityY + 1
       
-      if(keyDown("up")&& trex.y >= windowHeight-75){
-        
-        trex.velocityY=-14
-      }
-      if(keyDown("down")){
-        trex.changeAnimation("legalTrex", agachaTrex);
-      }
-      
       if(ground.x <= -windowWidth + 500){
         ground.x = ground.width/3
       }
@@ -198,7 +207,6 @@ function preload(){
 
 
       function keyReleased(){
-
         if(keyCode == 40){
           trex.changeAnimation("topTrex", texTrex);
         }
@@ -209,7 +217,7 @@ function preload(){
       function cloudsney() {
 
         if(frameCount % 20 == 0){
-        sky = createSprite(windowWidth + 30, random(100, 500), 100, 100);
+        sky = new Sprite(windowWidth + 30, random(100, 500), 100, 100);
         sky.addImage("claison", texSky);
 
         sky.velocityX = -13;
@@ -224,13 +232,12 @@ function preload(){
 
         if(frameCount % 35 == 0){
 
-          objObstacle1 = createSprite(windowWidth + 30, windowHeight - 50, 50, 70);
+          objObstacle1 = new Sprite(windowWidth + 30, windowHeight - 50, 50, 70);
 
       objObstacle1.velocityX = -20;
       objObstacle1.lifetime = 80;
 
-      obstacleGroup.add(objObstacle1);
-
+      obstacleGroup.add(objObstacle1);   
       var nada = Math.round(random(1, 6));
       switch(nada){
         case 1: objObstacle1.addImage("maluquinho", obstacle1);
@@ -253,7 +260,9 @@ function preload(){
        }
 
 
-       function Passaros(){
+       function Passaros() {
+
+        let dinnoPos = [400, 580, 610, 640];
 
         if(score >= 100){
 
@@ -261,7 +270,7 @@ function preload(){
 
           texDinossour.frameDelay = 10;
 
-          dinossour = createSprite(windowWidth + 30, random(580, 620), 100, 100);
+          dinossour = new Sprite(windowWidth + 30, random(dinnoPos), 100, 100);
           dinossour.addAnimation("voando", texDinossour);
 
           dinossour.velocityX = -25;
@@ -286,12 +295,16 @@ function preload(){
 
         trex.y = 550;
         trex.x = 80;
-
         trex.changeAnimation("topTrex",texTrex);
-        
         score = 0;
       
         bg = 156;
         horario = "dia";
       Lua.visible = false;
        }
+
+       function windowResized() {
+        resizeCanvas(windowWidth, windowHeight, true);
+
+        window.location.reload();
+      }
