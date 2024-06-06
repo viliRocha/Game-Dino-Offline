@@ -56,8 +56,8 @@ function preload(){
       agachaTrex = loadAnimation("assets/TrexDown1.png", "assets/TrexDown2.png");
       texDinossour = loadAnimation("assets/bird1.png", "assets/bird2.png");
 
-      jumpSound = loadSound("collided.wav");
-      collideSound = loadSound("jump.wav");
+      //jumpSound = loadSound("collided.wav");
+      //collideSound = loadSound("jump.wav");
       texTrex.playing = true;
       agachaTrex.playing = true;
       texDinossour.playing = true;
@@ -164,7 +164,7 @@ function preload(){
           if (event.keyCode == 38 && trex.y >= windowHeight - 75) {
             trex.velocityY=-16
   
-            jumpSound.play();
+            //jumpSound.play();
           }
           else if(event.keyCode == 40){
             trex.changeAnimation("legalTrex", agachaTrex);
