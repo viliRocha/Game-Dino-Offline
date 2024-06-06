@@ -174,7 +174,7 @@ function preload(){
       
       if(gameState == "end"){
 
-        collideSound.play();
+        //collideSound.play();
 
       obstacleGroup.setVelocityXEach(0);
       skyGroup.setVelocityXEach(0);
