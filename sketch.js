@@ -1,327 +1,261 @@
-var trex;
-var dinossour;
-var ground;
-var sky;
-var obstacle1;
-var obstacle2;
-var obstacle3;
-var obstacle4;
-var obstacle5;
-var obstacle6;
-var collided;
-var gameOver;
-var chaoDaGambiarra;
-var Lua;
+let trex,
+  ground,
+  clouds,
 
-var texTrex;
-var texGround;
-var agachaTrex;
-var texDinossour;
-var texSky;
-var texGameOver;
-var texLua;
+  texCloud,
 
-var skyGroup;
-var obstacleGroup;
-var dinossourGroup;
+  obstacle1,
+  obstacle2,
+  obstacle3,
+  obstacle4,
+  obstacle5,
+  obstacle6,
 
-var recomecar;
+  texRestart,
 
-var objObstacle1;
+  texTrex,
+  trexSprint,
+  trexCollide,
+  texGround,
 
-var score = 0;
-var maximunScore = 0;
-var bg = 156;
-var gameState = "start";
-var horario = "dia";
+  cloudsGroup,
+  obstacleGroup,
 
-var jumpSound;
-var collideSound;
+  restart,
 
+  objObstacle1,
 
-function preload(){
-    texGround = loadImage("assets/ground2.png");
-    texLua = loadImage("assets/LuaTrex.png")
-    gameOver = loadImage("assets/gameOver.png")
-    collided = loadImage("assets/collide.png")
-    texSky = loadImage("assets/cloud.png");
-    obstacle1 = loadImage("assets/obstacle1.png");
-    obstacle2 = loadImage("assets/obstacle2.png");
-    obstacle3 = loadImage("assets/obstacle3.png");
-    obstacle4 = loadImage("assets/obstacle4.png");
-    obstacle5 = loadImage("assets/obstacle5.png");
-    obstacle6 = loadImage("assets/obstacle6.png");
+  score = 0,
+  gameState = "start",
+  bg = 156
+canJump = false;
 
-      texTrex = loadAnimation("assets/trex1.png", "assets/trex2.png", "assets/trex3.png", "assets/trex4.png");
-      agachaTrex = loadAnimation("assets/TrexDown1.png", "assets/TrexDown2.png");
-      texDinossour = loadAnimation("assets/bird1.png", "assets/bird2.png");
+function preload() {
+  //Load restart button image
+  texRestart = loadImage("assets/restart.png");
 
-      //jumpSound = loadSound("collided.wav");
-      //collideSound = loadSound("jump.wav");
-      texTrex.playing = true;
-      agachaTrex.playing = true;
-      texDinossour.playing = true;
+  //load cloud image
+  texCloud = loadImage("assets/cloud.png");
+
+  //cactuses Imgs
+  obstacle1 = loadImage("assets/obstacle1.png");
+  obstacle2 = loadImage("assets/obstacle2.png");
+  obstacle3 = loadImage("assets/obstacle3.png");
+  obstacle4 = loadImage("assets/obstacle4.png");
+  obstacle5 = loadImage("assets/obstacle5.png");
+  obstacle6 = loadImage("assets/obstacle6.png");
+
+  //floor Img
+  texGround = loadImage("assets/ground2.png");
+
+  //Trex animations
+  texTrex = loadAnimation("assets/trex1.png", "assets/trex2.png", "assets/trex3.png", "assets/trex4.png");
+  trexSprint = loadAnimation("assets/TrexDown1.png", "assets/TrexDown2.png");
+  trexCollide = loadImage("assets/collide.png");
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+
+  texTrex.frameDelay = 5;
+  trexSprint.frameDelay = 10;
+
+  restart = createSprite(windowWidth / 2, windowHeight / 2, 50, 50);
+  restart.addImage("button", texRestart);
+  restart.visible = false;
+
+  trex = createSprite(80, windowHeight - 150, 100, 100)
+  trex.addAnimation("dead", trexCollide);
+  trex.addAnimation("trexWalk", texTrex);
+  trex.addAnimation("trexDown", trexSprint);
+
+  trex.animation.offset.y = 15;
+  trex.scale = 1;
+
+  trex.mass = 0;
+
+  ground = createSprite(windowWidth / 2, windowHeight - 30, windowWidth, 50);
+  ground.addImage("floor", texGround);
+
+  ground.width = windowWidth * 7;
+  ground.animation.offset.y = -30;
+  ground.scale = 0.9;
+
+  //ground.collider ='static';
+
+  //ground.debug = true;
+
+  //Defining font style
+  textFont('Lucida Console', 27);
+
+  cloudsGroup = new Group();
+  obstacleGroup = new Group();
+}
+
+function draw() {
+  background(bg);
+
+  //If player is already up in the air it can't jump
+  if (!trex.collides(ground)) {
+    trex.velocity.y = trex.velocity.y + 1;
+  }
+
+  trex.velocity.x = 0.26;
+  ground.velocity.x = -8;
+
+  //Player is alive
+  if (gameState == "start") {
+    score = score + Math.round(getFrameRate() / 60);
+
+    if (ground.x <= -windowWidth - 2200) {
+      ground.x = ground.width / 2;
     }
 
+    //Show player score in screen
+    fill("white")
+    text(score, windowWidth - 1300, windowHeight - 600)
+    //text("Maximun score: " + maximunScore, windowWidth - 500, windowHeight - 600)
 
-    function setup() {
-        createCanvas(windowWidth,windowHeight);
-      
-        texTrex.frameDelay = 4;
-          
-        trex = createSprite(80, windowHeight-150, 20, 20)
-          trex.addAnimation("topTrex",texTrex);
-          trex.addAnimation("legalTrex", agachaTrex);
-          trex.addImage("falecido", collided);
-          trex.scale = 1
-      
-        ground = createSprite(windowWidth/2,windowHeight-20, windowWidth, 50);
-      ground.addImage("chaoFirme", texGround);
-      ground.scale = 0.9
-      ground.debug = true;
+    if (kb.presses('down')) {
+      //   (distance, direction, speed)
+      trex.changeAnimation("trexDown", trexSprint);
 
-      ground.width = windowWidth;
-      ground.heigth = 20;
-      //ground.setCollider("rectangle", 0, 10, ground.width, 20);
+      canJump = false;
+    }
+    //Verify if player presses up arrow and deno is not at sprinting anim to jump
+    else if (kb.presses('up') && trex.y >= windowHeight - 110 && canJump == true/*trex.animation.name == 'trexDown'*/) {
+      trex.velocity.y = -20;
+    }
 
-      chaoDaGambiarra = createSprite(windowWidth/2,windowHeight+150, windowWidth, 50);
-      
-      Lua = createSprite(windowWidth/2 + 300,windowHeight/2 - 150, 50, 50);
-      Lua.addImage("luaCheia", texLua);
-      Lua.scale = 0.2
-      Lua.visible = false;
-      
-      skyGroup = new Group()
-      obstacleGroup = new Group()
-      dinossourGroup = new Group()
-      }
+    //console.log(trex.animation)
+    //generate_clouds();
+    generate_cactuses();
+
+    //If player is already playing dor some time && determined frameRate is reached
+    if (score >= 300 && frameCount % 50) {
+      //Make game sligtly faster the more player plays
+      trex.velocity.x = trex.velocity.x * 1.1;
+      ground.velocity.x = ground.velocity.x * 1.1;
+      objObstacle1.velocity.x = objObstacle1.velocity.x  * 1.0015;
 
 
-      function draw() {
-        background(bg); 
-      
-      ground.velocityX = -100;
-      
-      
-      if(gameState == "start"){
+    }
 
-        if(horario == "dia" && frameCount %30 == 0) {
-          Lua.visible = false;
-      bg = bg - 10;
-      setTimeout(()=>{
-        if(bg <= 0) {
-          horario = "noite";
-        }
-      },5000)
-        }
-      
-        if(horario == "noite" && frameCount %30 == 0) {
-          Lua.visible = true;
-          bg = bg + 10;
-          setTimeout(()=>{
-            if(bg >= 156) {
-              horario = "dia";
-            }
-          },5000)
-        }
-      
-        cloudsney();
-        chatoniulda();
-        Passaros();
-      
-        trex.collide(ground);
+    //Trex dies
+    if (trex.collides(obstacleGroup)) {
+      //trex.changeImage("falecido", collided);
 
-        score = score + Math.round(getFrameRate()/60);
+      //texGameOver = createSprite(windowWidth / 2, 300, 200, windowWidth)
+      //texGameOver.addImage("youAreDead", gameOver)
 
-        if(trex.collide(obstacleGroup)){
-         trex.changeImage("falecido", collided);
+      gameState = "end";
+    }
+  }
 
-          texGameOver = createSprite(windowWidth/2, 300, 200, windowWidth)
-          texGameOver.addImage("youAreDead", gameOver)
+  if (gameState == "end") {
 
-          gameState = "end";
-         }
-         if(trex.collide(dinossourGroup)){
-          trex.changeImage("falecido", collided);
+    //collideSound.play();
 
-          texGameOver = createSprite(windowWidth/2, 300, 200, windowWidth)
-          texGameOver.addImage("youAreDead", gameOver);
+    trex.changeAnimation("dead", trexCollide);
 
-          gameState = "end";
-        }
-        /*
-        if(keyDown("up") && trex.y >= windowHeight - 75){
-        
-          trex.velocityY=-16
-  
-          jumpSound.play();
-        }
-        else if(keyDown("down")){
-          trex.changeAnimation("legalTrex", agachaTrex);
-        }
-*/
-        document.onkeydown = function(event) {
-          if (event.keyCode == 38 && trex.y >= windowHeight - 75) {
-            trex.velocityY=-16
-  
-            //jumpSound.play();
-          }
-          else if(event.keyCode == 40){
-            trex.changeAnimation("legalTrex", agachaTrex);
-          }
-        };
-      }
-      
-      if(gameState == "end"){
+    trex.velocity.x = 0;
+    ground.velocity.x = 0;
 
-        //collideSound.play();
+    obstacleGroup.collider ='static';
+    //cloudsGroup.setVelocityXEach(0);
 
-      obstacleGroup.setVelocityXEach(0);
-      skyGroup.setVelocityXEach(0);
-      dinossourGroup.setVelocityXEach(0);
-      obstacleGroup.setLifetimeEach(-1);
-      skyGroup.setLifetimeEach(-1);
-      dinossourGroup.setLifetimeEach(-1);
-      dinossourGroup.setLifetimeEach(-1);
+    //obstacleGroup.velocity.x = -1;
+    //cloudsGroup.setLifetimeEach(-1);
 
-      
-      //trex.velocityX = 0;
-      //trex.velocityY =-1000;
-      trex.velocity.y = 30;
-      
+    restart.visible = true;
 
-      recomecar = createImg("assets/restart.png");
-      recomecar.position(windowWidth/2, windowHeight/2);
-      recomecar.size(50,50);
-      recomecar.mouseClicked(reset);
+    if (mouse.presses()) {
+      reset();
+    }
+    /*
+    //Check for new player score record
+    if (score > maximunScore) {
+      maximunScore = score;
+    }
+      */
+  }
+}
 
-      gameState = "stop";
+//Check if Down arrow was released
+function keyReleased() {
+  if (keyCode == 40) {
+    trex.changeAnimation("trexWalk", texTrex);
 
-      if(score > maximunScore){
-        maximunScore=score;
-      }
-      }
-      
-      if(gameState == "stop"){
-        ground.velocityX = 0;
-      }
-      
-      trex.collide(chaoDaGambiarra);
-      
-      trex.velocity.y = trex.velocity.y + 1
-      
-      if(ground.x <= -windowWidth + 500){
-        ground.x = ground.width/3
-      }
-      
-      textSize(40)
-      fill("white")
-      text(score, windowWidth - 1300, windowHeight - 600)
-      text("Your maximun score: " + maximunScore, windowWidth - 500,windowHeight - 600)
-      
-        //drawSprites();
-      }
+    canJump = true;
+  }
+}
 
+function generate_clouds() {
 
-      function keyReleased(){
-        if(keyCode == 40){
-          trex.changeAnimation("topTrex", texTrex);
-        }
-      }
-      //Tabela ASCII
+  if (frameCount % 40 == 0) {
+    clouds = createSprite(windowWidth + 30, random(100, 500), 100, 100);
+    clouds.addImage("sky", texCloud);
 
+    clouds.velocity.x = -4;
+    clouds.lifetime = 110;
 
-      function cloudsney() {
+    cloudsGroup.add(clouds);
+  }
+}
 
-        if(frameCount % 20 == 0){
-        sky = createSprite(windowWidth + 30, random(100, 500), 100, 100);
-        sky.addImage("claison", texSky);
+function generate_cactuses() {
 
-        sky.velocityX = -13;
-        sky.lifetime = 110;
+  if (frameCount % 70 == 0) {
+    objObstacle1 = new Sprite(windowWidth + 30, windowHeight - 100, 50, 70);
 
-        skyGroup.add(sky);
-        }
-       }
+    objObstacle1.mass = 0;
 
+    objObstacle1.velocity.x = -8;
+    objObstacle1.lifetime = 80;
 
-       function chatoniulda() {
-
-        if(frameCount % 35 == 0){
-
-          objObstacle1 = createSprite(windowWidth + 30, windowHeight - 50, 50, 70);
-
-      objObstacle1.velocityX = -20;
-      objObstacle1.lifetime = 80;
-
-      obstacleGroup.add(objObstacle1);   
-      var nada = Math.round(random(1, 6));
-      switch(nada){
-        case 1: objObstacle1.addImage("maluquinho", obstacle1);
+    obstacleGroup.add(objObstacle1);
+    var choose_cactus = Math.round(random(1, 6));
+    switch (choose_cactus) {
+      case 1:
+        objObstacle1.addImage("one_small_cactus", obstacle1);
+        objObstacle1.animation.offset.y = 13;
         break;
-        case 2: objObstacle1.addImage("maluquinho", obstacle2);
+      case 2:
+        objObstacle1.addImage("two_small_cactuses", obstacle2);
+        objObstacle1.animation.offset.y = 13;
         break;
-        case 3: objObstacle1.addImage("maluquinho", obstacle3);
+      case 3:
+        objObstacle1.addImage("tree_small_cactuses", obstacle3);
+        objObstacle1.animation.offset.y = 13;
         break;
-        case 4: objObstacle1.addImage("maluquinho", obstacle4);
+      case 4:
+        objObstacle1.addImage("one_big_catus", obstacle4);
         break;
-        case 5: objObstacle1.addImage("maluquinho", obstacle5);
+      case 5:
+        objObstacle1.addImage("two_big_cactuses", obstacle5);
         break;
-        case 6: objObstacle1.addImage("maluquinho", obstacle6);
+      case 6:
+        objObstacle1.addImage("tree_big_cactuses", obstacle6);
         break;
-      }
-      
-      
-        }
-      
-       }
+    }
+    objObstacle1.debug = true;
+  }
+}
 
+//Called when player clicks on button to play again
+function reset() {
+  trex.position.y = 550;
+  trex.position.x = 80;
 
-       function Passaros() {
+  gameState = "start";
 
-        let dinnoPos = [400, 580, 610, 640];
+  //texGameOver.destroy();
+  restart.visible = false;
 
-        if(score >= 100){
+  obstacleGroup.remove();
 
-        if(frameCount % 50 == 0 && score != 0){
+  trex.changeAnimation("trexWalk", texTrex);
+  score = 0;
 
-          texDinossour.frameDelay = 10;
-
-          dinossour = createSprite(windowWidth + 30, random(dinnoPos), 100, 100);
-          dinossour.addAnimation("voando", texDinossour);
-
-          dinossour.velocityX = -25;
-        dinossour.lifetime = 80;
-
-        dinossourGroup.add(dinossour);
-        }
-       }
-      }
-
-
-      function reset(){
-
-        gameState = "start";
-
-        texGameOver.destroy();
-        recomecar.hide();
-
-        obstacleGroup.destroyEach();
-        skyGroup.destroyEach();
-        dinossourGroup.destroyEach();
-
-        trex.y = 550;
-        trex.x = 80;
-        trex.changeAnimation("topTrex",texTrex);
-        score = 0;
-      
-        bg = 156;
-        horario = "dia";
-      Lua.visible = false;
-       }
-
-       function windowResized() {
-        resizeCanvas(windowWidth, windowHeight, true);
-
-        window.location.reload();
-      }
+  //bg = 156;
+}
