@@ -2,16 +2,12 @@ let trex,
   ground,
   clouds,
 
-  texCloud,
-
   obstacle1,
   obstacle2,
   obstacle3,
   obstacle4,
   obstacle5,
   obstacle6,
-
-  texRestart,
 
   texTrex,
   trexSprint,
@@ -31,12 +27,6 @@ let trex,
 canJump = false;
 
 function preload() {
-  //Load restart button image
-  texRestart = loadImage("assets/restart.png");
-
-  //load cloud image
-  texCloud = loadImage("assets/cloud.png");
-
   //cactuses Imgs
   obstacle1 = loadImage("assets/obstacle1.png");
   obstacle2 = loadImage("assets/obstacle2.png");
@@ -60,9 +50,9 @@ function setup() {
   texTrex.frameDelay = 5;
   trexSprint.frameDelay = 10;
 
-  restart = createSprite(windowWidth / 2, windowHeight / 2, 50, 50);
-  restart.addImage("button", texRestart);
-  restart.visible = false;
+  restart= createImg("assets/restart.png");
+  restart.position(windowWidth / 2, windowHeight / 2);
+  restart.size(50, 50);
 
   trex = createSprite(80, windowHeight - 150, 100, 100)
   trex.addAnimation("dead", trexCollide);
@@ -107,6 +97,8 @@ function draw() {
   if (gameState == "start") {
     score = score + Math.round(getFrameRate() / 60);
 
+    restart.hide();
+
     if (ground.x <= -windowWidth - 2200) {
       ground.x = ground.width / 2;
     }
@@ -128,7 +120,7 @@ function draw() {
     }
 
     //console.log(trex.animation)
-    //generate_clouds();
+    generate_clouds();
     generate_cactuses();
 
     //If player is already playing dor some time && determined frameRate is reached
@@ -167,7 +159,7 @@ function draw() {
     //obstacleGroup.velocity.x = -1;
     //cloudsGroup.setLifetimeEach(-1);
 
-    restart.visible = true;
+    restart.show();
 
     if (mouse.presses()) {
       reset();
