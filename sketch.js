@@ -17,6 +17,8 @@ let trex,
   cloudsGroup,
   obstacleGroup,
 
+  gameOverTxt,
+
   restart,
 
   objObstacle1,
@@ -24,8 +26,11 @@ let trex,
   score = 0,
   maximunScore = 0,
   gameState = "start",
-  bg = 156
-canJump = false;
+  bg = 156,
+  canJump = false,
+
+  jumpingSound,
+  collideSound;
 
 function preload() {
   //cactuses Imgs
@@ -43,6 +48,10 @@ function preload() {
   texTrex = loadAnimation("assets/trex1.png", "assets/trex2.png", "assets/trex3.png", "assets/trex4.png");
   trexSprint = loadAnimation("assets/TrexDown1.png", "assets/TrexDown2.png");
   trexCollide = loadImage("assets/collide.png");
+
+  //Player sound effects
+  jumpingSound = loadSound("./sound_FX/collided.wav");
+  collideSound = loadSound("./sound_FX/jump.wav");
 }
 
 function setup() {
@@ -51,6 +60,11 @@ function setup() {
   //Setting a speed to the frames of the animations
   texTrex.frameDelay = 5;
   trexSprint.frameDelay = 10;
+
+  //Loading the game over text that will apear when player dies
+  gameOverTxt = createImg("assets/gameOver.png");
+  gameOverTxt.position(windowWidth / 2 - 254, windowHeight / 2 - 35);
+  gameOverTxt.size(450, 45);
 
   //creating a restart button that will only be shown when player dies
   restart= createImg("assets/restart.png");
@@ -89,9 +103,10 @@ function setup() {
 function draw() {
   background(bg);
 
-  //Show player score in screen
+  //Show player score and score record in screen
   fill("white");
   text(score, windowWidth - 1300, windowHeight - 600);
+  text("Maximun score: " + maximunScore, windowWidth - 500, windowHeight - 600);
 
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
@@ -103,21 +118,18 @@ function draw() {
   //Give the impression player is moving
   ground.velocity.x = -8;
 
-  //If layer is alive
+  //If player is alive
   if (gameState == "start") {
     score = score + Math.round(getFrameRate() / 60);
 
     restart.hide();
 
+    gameOverTxt.hide();
+
     //Generate a new ground in front of the other one otherwise player would fall(ground has speed)
     if (ground.x <= -windowWidth - 2200) {
       ground.x = ground.width / 2;
     }
-
-    //Show player score in screen
-    fill("white")
-    text(score, windowWidth - 1300, windowHeight - 600)
-    text("Maximun score: " + maximunScore, windowWidth - 500, windowHeight - 600);
 
     if (kb.presses('down')) {
       //   (distance, direction, speed)
@@ -128,6 +140,8 @@ function draw() {
     //Verify if player presses up arrow and Deno is not at sprinting anim to jump
     else if (kb.presses('up') && trex.y >= windowHeight - 110 && canJump == true/*trex.animation.name == 'trexDown'*/) {
       trex.velocity.y = -20;
+
+      jumpingSound.play();
     }
 
     //console.log(trex.animation)
@@ -146,19 +160,15 @@ function draw() {
 
     //Trex dies
     if (trex.collides(obstacleGroup)) {
-      //trex.changeImage("falecido", collided);
+      gameOverTxt.show();
 
-      //texGameOver = createSprite(windowWidth / 2, 300, 200, windowWidth)
-      //texGameOver.addImage("youAreDead", gameOver)
+      collideSound.play();
 
       gameState = "end";
     }
   }
 
   if (gameState == "end") {
-
-    //collideSound.play();
-
     trex.changeAnimation("dead", trexCollide);
 
     trex.velocity.x = 0;
@@ -176,6 +186,7 @@ function draw() {
     if (mouse.presses()) {
       reset();
     }
+    
     //Check for new player score record
     if (score > maximunScore) {
       maximunScore = score;
@@ -255,8 +266,6 @@ function reset() {
   trex.position.x = 80;
 
   gameState = "start";
-
-  //texGameOver.destroy();
 
   //reset cactuses generation
   obstacleGroup.remove();
