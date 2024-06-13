@@ -22,6 +22,7 @@ let trex,
   objObstacle1,
 
   score = 0,
+  maximunScore = 0,
   gameState = "start",
   bg = 156
 canJump = false;
@@ -116,7 +117,7 @@ function draw() {
     //Show player score in screen
     fill("white")
     text(score, windowWidth - 1300, windowHeight - 600)
-    //text("Maximun score: " + maximunScore, windowWidth - 500, windowHeight - 600)
+    text("Maximun score: " + maximunScore, windowWidth - 500, windowHeight - 600);
 
     if (kb.presses('down')) {
       //   (distance, direction, speed)
@@ -130,7 +131,7 @@ function draw() {
     }
 
     //console.log(trex.animation)
-    generate_clouds();
+    //generate_clouds();
     generate_cactuses();
 
     //If player has already been playing for some time && determined frameRate is reached
@@ -175,12 +176,10 @@ function draw() {
     if (mouse.presses()) {
       reset();
     }
-    /*
     //Check for new player score record
     if (score > maximunScore) {
       maximunScore = score;
     }
-      */
   }
 }
 
@@ -258,7 +257,6 @@ function reset() {
   gameState = "start";
 
   //texGameOver.destroy();
-  restart.visible = false;
 
   //reset cactuses generation
   obstacleGroup.remove();
