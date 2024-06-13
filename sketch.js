@@ -47,9 +47,11 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+  //Setting a speed to the frames of the animations
   texTrex.frameDelay = 5;
   trexSprint.frameDelay = 10;
 
+  //creating a restart button that will only be shown when player dies
   restart= createImg("assets/restart.png");
   restart.position(windowWidth / 2, windowHeight / 2);
   restart.size(50, 50);
@@ -62,6 +64,7 @@ function setup() {
   trex.animation.offset.y = 15;
   trex.scale = 1;
 
+  //Defining player's weight, player's mass is 0 because otherwise, it would flip the floor
   trex.mass = 0;
 
   ground = createSprite(windowWidth / 2, windowHeight - 30, windowWidth, 50);
@@ -85,20 +88,27 @@ function setup() {
 function draw() {
   background(bg);
 
+  //Show player score in screen
+  fill("white");
+  text(score, windowWidth - 1300, windowHeight - 600);
+
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
     trex.velocity.y = trex.velocity.y + 1;
   }
 
+  //Just has some speed to stay in place, otherwise, the ground would drag it away
   trex.velocity.x = 0.26;
+  //Give the impression player is moving
   ground.velocity.x = -8;
 
-  //Player is alive
+  //If layer is alive
   if (gameState == "start") {
     score = score + Math.round(getFrameRate() / 60);
 
     restart.hide();
 
+    //Generate a new ground in front of the other one otherwise player would fall(ground has speed)
     if (ground.x <= -windowWidth - 2200) {
       ground.x = ground.width / 2;
     }
@@ -114,7 +124,7 @@ function draw() {
 
       canJump = false;
     }
-    //Verify if player presses up arrow and deno is not at sprinting anim to jump
+    //Verify if player presses up arrow and Deno is not at sprinting anim to jump
     else if (kb.presses('up') && trex.y >= windowHeight - 110 && canJump == true/*trex.animation.name == 'trexDown'*/) {
       trex.velocity.y = -20;
     }
@@ -123,9 +133,9 @@ function draw() {
     generate_clouds();
     generate_cactuses();
 
-    //If player is already playing dor some time && determined frameRate is reached
+    //If player has already been playing for some time && determined frameRate is reached
     if (score >= 300 && frameCount % 50) {
-      //Make game sligtly faster the more player plays
+      //Make game slightly faster the more player plays
       trex.velocity.x = trex.velocity.x * 1.1;
       ground.velocity.x = ground.velocity.x * 1.1;
       objObstacle1.velocity.x = objObstacle1.velocity.x  * 1.0015;
@@ -153,6 +163,7 @@ function draw() {
     trex.velocity.x = 0;
     ground.velocity.x = 0;
 
+    //cactuses need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
     obstacleGroup.collider ='static';
     //cloudsGroup.setVelocityXEach(0);
 
@@ -183,15 +194,17 @@ function keyReleased() {
 }
 
 function generate_clouds() {
-
   if (frameCount % 40 == 0) {
-    clouds = createSprite(windowWidth + 30, random(100, 500), 100, 100);
-    clouds.addImage("sky", texCloud);
+     //creating clouds as an image because it won't be able to collide with the player
+    clouds = createImg("assets/cloud.png");
+    clouds.position(windowWidth / 2, random(100, 500));
+    clouds.size(90, 40);
 
-    clouds.velocity.x = -4;
-    clouds.lifetime = 110;
+    //clouds.position = clouds.position + 10;
+    //clouds.velocity.x = 20;
+    //clouds.lifetime = 110;
 
-    cloudsGroup.add(clouds);
+    //cloudsGroup.add(clouds);
   }
 }
 
@@ -200,13 +213,15 @@ function generate_cactuses() {
   if (frameCount % 70 == 0) {
     objObstacle1 = new Sprite(windowWidth + 30, windowHeight - 100, 50, 70);
 
+    //setting cactuses weight to 0 because otherwise, it would filp the floor
     objObstacle1.mass = 0;
 
     objObstacle1.velocity.x = -8;
     objObstacle1.lifetime = 80;
 
     obstacleGroup.add(objObstacle1);
-    var choose_cactus = Math.round(random(1, 6));
+    //randomize which cactus will be generated
+    let choose_cactus = Math.round(random(1, 6));
     switch (choose_cactus) {
       case 1:
         objObstacle1.addImage("one_small_cactus", obstacle1);
@@ -230,12 +245,13 @@ function generate_cactuses() {
         objObstacle1.addImage("tree_big_cactuses", obstacle6);
         break;
     }
-    objObstacle1.debug = true;
+    //objObstacle1.debug = true;
   }
 }
 
 //Called when player clicks on button to play again
 function reset() {
+  //reset Dino's position in case it dies in some weird position
   trex.position.y = 550;
   trex.position.x = 80;
 
@@ -244,6 +260,7 @@ function reset() {
   //texGameOver.destroy();
   restart.visible = false;
 
+  //reset cactuses generation
   obstacleGroup.remove();
 
   trex.changeAnimation("trexWalk", texTrex);
