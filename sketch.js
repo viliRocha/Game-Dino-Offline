@@ -1,4 +1,5 @@
 let trex,
+  flyngDino,
   ground,
   clouds,
 
@@ -12,10 +13,12 @@ let trex,
   texTrex,
   trexSprint,
   trexCollide,
+  texFlyingDino,
   texGround,
 
   cloudsGroup,
   obstacleGroup,
+  flyingDinoGroup,
 
   gameOverTxt,
 
@@ -43,6 +46,9 @@ function preload() {
 
   //floor Img
   texGround = loadImage("assets/ground2.png");
+
+  //Pterodactylus dinossaur enemy flying animation
+  texFlyingDino = loadAnimation("assets/bird1.png", "assets/bird2.png");
 
   //Trex animations
   texTrex = loadAnimation("assets/trex1.png", "assets/trex2.png", "assets/trex3.png", "assets/trex4.png");
@@ -98,6 +104,7 @@ function setup() {
 
   cloudsGroup = new Group();
   obstacleGroup = new Group();
+  flyingDinoGroup = new Group();
 }
 
 function draw() {
@@ -155,11 +162,12 @@ function draw() {
       ground.velocity.x = ground.velocity.x * 1.1;
       objObstacle1.velocity.x = objObstacle1.velocity.x  * 1.0015;
 
-
+      //Generate Pterodactylus at random heights for player to dodge
+      generate_flyingDino();
     }
 
     //Trex dies
-    if (trex.collides(obstacleGroup)) {
+    if (trex.collides(obstacleGroup) || trex.collides(flyingDinoGroup)) {
       gameOverTxt.show();
 
       collideSound.play();
@@ -257,6 +265,20 @@ function generate_cactuses() {
     }
     //objObstacle1.debug = true;
   }
+}
+
+function generate_flyingDino() {
+  //Possible heihts for flying dino to spawn in
+  let flying_dino_pos = [400, 580, 610, 640];
+      texFlyingDino.frameDelay = 10;
+
+      flyngDino = createSprite(windowWidth + 30, random(flying_dino_pos), 100, 100);
+      flyngDino.addAnimation("voando", texFlyingDino);
+
+      flyngDino.velocityX = -25;
+      flyngDino.lifetime = 80;
+
+      flyingDinoGroup.add(flyngDino);
 }
 
 //Called when player clicks on button to play again
