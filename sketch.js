@@ -1,20 +1,12 @@
 let trex,
-  flyingDino,
+  flyngDino,
   ground,
   clouds,
-
-  obstacle1,
-  obstacle2,
-  obstacle3,
-  obstacle4,
-  obstacle5,
-  obstacle6,
 
   texTrex,
   trexSprint,
   trexCollide,
   texFlyingDino,
-  texGround,
 
   cloudsGroup,
   obstacleGroup,
@@ -36,17 +28,6 @@ let trex,
   collideSound;
 
 function preload() {
-  //cactuses Imgs
-  obstacle1 = loadImage("assets/obstacle1.png");
-  obstacle2 = loadImage("assets/obstacle2.png");
-  obstacle3 = loadImage("assets/obstacle3.png");
-  obstacle4 = loadImage("assets/obstacle4.png");
-  obstacle5 = loadImage("assets/obstacle5.png");
-  obstacle6 = loadImage("assets/obstacle6.png");
-
-  //floor Img
-  texGround = loadImage("assets/ground2.png");
-
   //Pterodactylus dinossaur enemy flying animation
   texFlyingDino = loadAnimation("assets/bird1.png", "assets/bird2.png");
 
@@ -73,8 +54,8 @@ function setup() {
   gameOverTxt.size(450, 45);
 
   //creating a restart button that will only be shown when player dies
-  restart= createImg("assets/restart.png");
-  restart.position(windowWidth / 2, windowHeight / 2);
+  restart = createImg("assets/restart.png");
+  restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
 
   trex = createSprite(80, windowHeight - 150, 100, 100)
@@ -89,10 +70,10 @@ function setup() {
   trex.mass = 0;
 
   ground = createSprite(windowWidth / 2, windowHeight - 30, windowWidth, 50);
-  ground.addImage("floor", texGround);
+  ground.image = "assets/ground2.png";
 
   ground.width = windowWidth * 7;
-  ground.animation.offset.y = -30;
+  ground.image.offset.y = -30;
   ground.scale = 0.9;
 
   //ground.collider ='static';
@@ -125,7 +106,7 @@ function draw() {
   //Give the impression player is moving
   ground.velocity.x = -8;
 
-  //If player is alive
+  //if player is alive
   if (gameState == "start") {
     score = score + Math.round(getFrameRate() / 60);
 
@@ -152,15 +133,15 @@ function draw() {
     }
 
     //console.log(trex.animation)
-    //generate_clouds();
+    generate_clouds();
     generate_cactuses();
 
     //If player has already been playing for some time && determined frameRate is reached
-    if (score >= 300 && frameCount % 50) {
+    if (score >= 300 && frameCount % 50 == 0) {
       //Make game slightly faster the more player plays
       trex.velocity.x = trex.velocity.x * 1.1;
       ground.velocity.x = ground.velocity.x * 1.1;
-      objObstacle1.velocity.x = objObstacle1.velocity.x  * 1.0015;
+      objObstacle1.velocity.x = objObstacle1.velocity.x * 1.0015;
 
       //Generate Pterodactylus at random heights for player to dodge
       generate_flyingDino();
@@ -183,20 +164,18 @@ function draw() {
     ground.velocity.x = 0;
 
     //cactuses need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
-    obstacleGroup.collider ='static';
-    //cloudsGroup.setVelocityXEach(0);
+    obstacleGroup.collider = 'static';
 
-    flyingDinoGroup.collider ='static';
+    flyingDinoGroup.collider = 'static';
 
-    //obstacleGroup.velocity.x = -1;
-    //cloudsGroup.setLifetimeEach(-1);
+    cloudsGroup.collider = 'static';
 
     restart.show();
 
     if (mouse.presses()) {
       reset();
     }
-    
+
     //Check for new player score record
     if (score > maximunScore) {
       maximunScore = score;
@@ -214,27 +193,28 @@ function keyReleased() {
 }
 
 function generate_clouds() {
-  if (frameCount % 40 == 0) {
-     //creating clouds as an image because it won't be able to collide with the player
-    clouds = createImg("assets/cloud.png");
-    clouds.position(windowWidth / 2, random(100, 500));
-    clouds.size(90, 40);
+  if (frameCount % 60 == 0) {
+    //creating clouds as an image because it won't be able to collide with the player
+    clouds = createSprite(windowWidth + 30, random(100, 500), 90, 40);
+    clouds.image = "assets/cloud.png";
 
-    //clouds.position = clouds.position + 10;
-    //clouds.velocity.x = 20;
-    //clouds.lifetime = 110;
+    clouds.collider = 'none';
 
-    //cloudsGroup.add(clouds);
+    clouds.velocity.x = -4;
+    clouds.lifetime = 110;
+
+    cloudsGroup.add(clouds);
   }
 }
 
 function generate_cactuses() {
-
   if (frameCount % 70 == 0) {
     objObstacle1 = new Sprite(windowWidth + 30, windowHeight - 100, 50, 70);
 
     //setting cactuses weight to 0 because otherwise, it would filp the floor
     objObstacle1.mass = 0;
+
+    objObstacle1.collider = 'kinematic';
 
     objObstacle1.velocity.x = -8;
     objObstacle1.lifetime = 80;
@@ -244,25 +224,25 @@ function generate_cactuses() {
     let choose_cactus = Math.round(random(1, 6));
     switch (choose_cactus) {
       case 1:
-        objObstacle1.addImage("one_small_cactus", obstacle1);
-        objObstacle1.animation.offset.y = 13;
+        objObstacle1.image = "assets/obstacle1.png";
+        objObstacle1.image.offset.y = 13;
         break;
       case 2:
-        objObstacle1.addImage("two_small_cactuses", obstacle2);
-        objObstacle1.animation.offset.y = 13;
+        objObstacle1.image = "assets/obstacle2.png";
+        objObstacle1.image.offset.y = 13;
         break;
       case 3:
-        objObstacle1.addImage("tree_small_cactuses", obstacle3);
-        objObstacle1.animation.offset.y = 13;
+        objObstacle1.image = "assets/obstacle3.png";
+        objObstacle1.image.offset.y = 13;
         break;
       case 4:
-        objObstacle1.addImage("one_big_catus", obstacle4);
+        objObstacle1.image = "assets/obstacle4.png";
         break;
       case 5:
-        objObstacle1.addImage("two_big_cactuses", obstacle5);
+        objObstacle1.image = "assets/obstacle5.png";
         break;
       case 6:
-        objObstacle1.addImage("tree_big_cactuses", obstacle6);
+        objObstacle1.image = "assets/obstacle6.png";
         break;
     }
     //objObstacle1.debug = true;
@@ -271,16 +251,18 @@ function generate_cactuses() {
 
 function generate_flyingDino() {
   //Possible heihts for flying dino to spawn in
-  let flying_dino_pos = [400, 580, 610, 640];
-      texFlyingDino.frameDelay = 10;
+  let flying_dino_pos = [300, 400, 540];
+  texFlyingDino.frameDelay = 14;
 
-      flyingDino = createSprite(windowWidth + 30, random(flying_dino_pos), 100, 100);
-      flyingDino.addAnimation("voando", texFlyingDino);
+  flyngDino = createSprite(windowWidth + 30, random(flying_dino_pos), 100, 100);
+  flyngDino.addAnimation("flapping_wings", texFlyingDino);
 
-      flyingDino.velocityX = -25;
-      flyingDino.lifetime = 80;
+  flyngDino.collider = 'kinematic';
 
-      flyingDinoGroup.add(flyingDino);
+  flyngDino.velocity.x = -9;
+  flyngDino.lifetime = 80;
+
+  flyingDinoGroup.add(flyngDino);
 }
 
 //Called when player clicks on button to play again
@@ -293,6 +275,10 @@ function reset() {
 
   //reset cactuses generation
   obstacleGroup.remove();
+
+  flyingDinoGroup.remove();
+
+  cloudsGroup.remove();
 
   trex.changeAnimation("trexWalk", texTrex);
   score = 0;
