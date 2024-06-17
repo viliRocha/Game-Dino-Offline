@@ -1,5 +1,5 @@
 let trex,
-  flyngDino,
+  flyingDino,
   ground,
   clouds,
 
@@ -274,13 +274,13 @@ function generate_flyingDino() {
   let flying_dino_pos = [400, 580, 610, 640];
       texFlyingDino.frameDelay = 10;
 
-      flyngDino = createSprite(windowWidth + 30, random(flying_dino_pos), 100, 100);
-      flyngDino.addAnimation("voando", texFlyingDino);
+      flyingDino = createSprite(windowWidth + 30, random(flying_dino_pos), 100, 100);
+      flyingDino.addAnimation("voando", texFlyingDino);
 
-      flyngDino.velocityX = -25;
-      flyngDino.lifetime = 80;
+      flyingDino.velocityX = -25;
+      flyingDino.lifetime = 80;
 
-      flyingDinoGroup.add(flyngDino);
+      flyingDinoGroup.add(flyingDino);
 }
 
 //Called when player clicks on button to play again
