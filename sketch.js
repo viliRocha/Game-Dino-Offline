@@ -186,6 +186,8 @@ function draw() {
     obstacleGroup.collider ='static';
     //cloudsGroup.setVelocityXEach(0);
 
+    flyingDinoGroup.collider ='static';
+
     //obstacleGroup.velocity.x = -1;
     //cloudsGroup.setLifetimeEach(-1);
 
