@@ -163,7 +163,7 @@ function draw() {
     trex.velocity.x = 0;
     ground.velocity.x = 0;
 
-    //cactuses need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
+    //obstacles need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
     obstacleGroup.collider = 'static';
 
     flyingDinoGroup.collider = 'static';
@@ -198,9 +198,11 @@ function generate_clouds() {
     clouds = createSprite(windowWidth + 30, random(100, 500), 90, 40);
     clouds.image = "assets/cloud.png";
 
+    //Clouds shouldn't collide with anything
     clouds.collider = 'none';
 
     clouds.velocity.x = -4;
+    //Desapear after the get off-screen, so game keeps performance
     clouds.life = 350;
 
     cloudsGroup.add(clouds);
@@ -214,6 +216,7 @@ function generate_cactuses() {
     //setting cactuses weight to 0 because otherwise, it would filp the floor
     objObstacle1.mass = 0;
 
+    ////This way cactuses can't collide with Pterodactylus but can with the player
     objObstacle1.collider = 'kinematic';
 
     objObstacle1.velocity.x = -8;
@@ -275,7 +278,7 @@ function reset() {
 
   gameState = "start";
 
-  //reset cactuses generation
+  //reset cactuses, clouds and Pterodactylus generation
   obstacleGroup.remove();
 
   flyingDinoGroup.remove();
