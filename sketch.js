@@ -137,11 +137,11 @@ function draw() {
     generate_cactuses();
 
     //If player has already been playing for some time && determined frameRate is reached
-    if (score >= 300 && frameCount % 50 == 0) {
+    if (score >= 300 && frameCount % 100 == 0) {
       //Make game slightly faster the more player plays
-      trex.velocity.x = trex.velocity.x * 1.1;
-      ground.velocity.x = ground.velocity.x * 1.1;
-      objObstacle1.velocity.x = objObstacle1.velocity.x * 1.0015;
+      trex.velocity.x = trex.velocity.x * 1.6;
+      ground.velocity.x = ground.velocity.x * 1.6;
+      objObstacle1.velocity.x = objObstacle1.velocity.x * 1.009;
 
       //Generate Pterodactylus at random heights for player to dodge
       generate_flyingDino();
@@ -201,7 +201,7 @@ function generate_clouds() {
     clouds.collider = 'none';
 
     clouds.velocity.x = -4;
-    clouds.lifetime = 110;
+    clouds.life = 350;
 
     cloudsGroup.add(clouds);
   }
@@ -217,7 +217,7 @@ function generate_cactuses() {
     objObstacle1.collider = 'kinematic';
 
     objObstacle1.velocity.x = -8;
-    objObstacle1.lifetime = 80;
+    objObstacle1.life = 180;
 
     obstacleGroup.add(objObstacle1);
     //randomize which cactus will be generated
@@ -251,16 +251,18 @@ function generate_cactuses() {
 
 function generate_flyingDino() {
   //Possible heihts for flying dino to spawn in
-  let flying_dino_pos = [300, 400, 540];
+  let flying_dino_pos = [300, 542];
   texFlyingDino.frameDelay = 14;
 
-  flyngDino = createSprite(windowWidth + 30, random(flying_dino_pos), 100, 100);
+  flyngDino = createSprite(windowWidth + 30, random(flying_dino_pos), 50, 50);
   flyngDino.addAnimation("flapping_wings", texFlyingDino);
 
   flyngDino.collider = 'kinematic';
 
-  flyngDino.velocity.x = -9;
-  flyngDino.lifetime = 80;
+  flyngDino.velocity.x = -11;
+  flyngDino.life = 180;
+
+  //flyngDino.debug = true;
 
   flyingDinoGroup.add(flyngDino);
 }
