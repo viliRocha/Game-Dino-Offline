@@ -1,5 +1,3 @@
-let savedScore = localStorage.getItem('userRecord');
-
 let trex,
   flyngDino,
   ground,
@@ -21,10 +19,12 @@ let trex,
   objObstacle1,
 
   score = 0,
-  maximunScore = savedScore ? savedScore : 0,
+  maximumScore = savedScore ? savedScore : 0,
   gameState = "start",
   bg = 156,
   canJump = false,
+
+  savedScore = localStorage.getItem('userRecord'),
 
   jumpingSound,
   collideSound;
@@ -99,7 +99,7 @@ function draw() {
   //Show player score and score record in screen
   fill("white");
   text(score, windowWidth - 1300, windowHeight - 600);
-  text("Maximun score: " + maximunScore, windowWidth - 500, windowHeight - 600);
+  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight - 600);
 
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
@@ -186,10 +186,11 @@ function draw() {
     }
 
     //Check for new player score record
-    if (score > maximunScore) {
-      maximunScore = score;
+    if (score > maximumScore) {
+      maximumScore = score;
 
-      localStorage.setItem("userRecord", maximunScore);
+      //Save player maximum score so if the page is reloaded player will still have its score record saved
+      localStorage.setItem("userRecord", maximumScore);
     }
   }
 }
