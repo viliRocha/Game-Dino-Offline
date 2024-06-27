@@ -194,7 +194,6 @@ function keyReleased() {
 
 function generate_clouds() {
   if (frameCount % 60 == 0) {
-    //creating clouds as an image because it won't be able to collide with the player
     clouds = createSprite(windowWidth + 30, random(100, 500), 90, 40);
     clouds.image = "assets/cloud.png";
 
@@ -202,7 +201,7 @@ function generate_clouds() {
     clouds.collider = 'none';
 
     clouds.velocity.x = -4;
-    //Desapear after the get off-screen, so game keeps performance
+    //Desapear after the get off screen, so game keeps performance
     clouds.life = 350;
 
     cloudsGroup.add(clouds);
@@ -216,10 +215,11 @@ function generate_cactuses() {
     //setting cactuses weight to 0 because otherwise, it would filp the floor
     objObstacle1.mass = 0;
 
-    ////This way cactuses can't collide with Pterodactylus but can with the player
+    //This way cactuses can't collide with Pterodactylus but can with the player
     objObstacle1.collider = 'kinematic';
 
     objObstacle1.velocity.x = -8;
+    //Setting life time to cactuses too
     objObstacle1.life = 180;
 
     obstacleGroup.add(objObstacle1);
@@ -260,6 +260,7 @@ function generate_flyingDino() {
   flyngDino = createSprite(windowWidth + 30, random(flying_dino_pos), 50, 50);
   flyngDino.addAnimation("flapping_wings", texFlyingDino);
 
+  //This way flying dinos can't collide with cactuses but can with the player
   flyngDino.collider = 'kinematic';
 
   flyngDino.velocity.x = -11;
