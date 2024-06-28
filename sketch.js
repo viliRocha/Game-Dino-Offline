@@ -19,10 +19,12 @@ let trex,
   objObstacle1,
 
   score = 0,
-  maximunScore = 0,
+  maximumScore = savedScore ? savedScore : 0,
   gameState = "start",
   bg = 156,
   canJump = false,
+
+  savedScore = localStorage.getItem('userRecord'),
 
   jumpingSound,
   collideSound;
@@ -58,7 +60,7 @@ function setup() {
   restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
 
-  trex = createSprite(80, windowHeight - 150, 100, 100)
+  trex = new Sprite(150, windowHeight - 150, 100, 100)
   trex.addAnimation("dead", trexCollide);
   trex.addAnimation("trexWalk", texTrex);
   trex.addAnimation("trexDown", trexSprint);
@@ -69,12 +71,15 @@ function setup() {
   //Defining player's weight, player's mass is 0 because otherwise, it would flip the floor
   trex.mass = 0;
 
-  ground = createSprite(windowWidth / 2, windowHeight - 30, windowWidth, 50);
+  ground = new Sprite(windowWidth / 2, windowHeight - 30, windowWidth, 50);
   ground.image = "assets/ground2.png";
 
   ground.width = windowWidth * 7;
   ground.image.offset.y = -30;
   ground.scale = 0.9;
+
+  //Removing friction between Trex and ground
+  ground.friction = 0;
 
   //ground.collider ='static';
 
@@ -94,15 +99,13 @@ function draw() {
   //Show player score and score record in screen
   fill("white");
   text(score, windowWidth - 1300, windowHeight - 600);
-  text("Maximun score: " + maximunScore, windowWidth - 500, windowHeight - 600);
+  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight - 600);
 
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
     trex.velocity.y = trex.velocity.y + 1;
   }
 
-  //Just has some speed to stay in place, otherwise, the ground would drag it away
-  trex.velocity.x = 0.26;
   //Give the impression player is moving
   ground.velocity.x = -8;
 
@@ -166,9 +169,15 @@ function draw() {
     //obstacles need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
     obstacleGroup.collider = 'static';
 
+    obstacleGroup.life = Infinity;
+
     flyingDinoGroup.collider = 'static';
 
+    flyingDinoGroup.life = Infinity;
+
     cloudsGroup.collider = 'static';
+
+    cloudsGroup.life = Infinity;
 
     restart.show();
 
@@ -177,8 +186,11 @@ function draw() {
     }
 
     //Check for new player score record
-    if (score > maximunScore) {
-      maximunScore = score;
+    if (score > maximumScore) {
+      maximumScore = score;
+
+      //Save player maximum score so if the page is reloaded player will still have its score record saved
+      localStorage.setItem("userRecord", maximumScore);
     }
   }
 }
@@ -194,7 +206,7 @@ function keyReleased() {
 
 function generate_clouds() {
   if (frameCount % 60 == 0) {
-    clouds = createSprite(windowWidth + 30, random(100, 500), 90, 40);
+    clouds = new Sprite(windowWidth + 30, random(100, 500), 90, 40);
     clouds.image = "assets/cloud.png";
 
     //Clouds shouldn't collide with anything
@@ -257,7 +269,7 @@ function generate_flyingDino() {
   let flying_dino_pos = [300, 542];
   texFlyingDino.frameDelay = 14;
 
-  flyngDino = createSprite(windowWidth + 30, random(flying_dino_pos), 50, 50);
+  flyngDino = new Sprite(windowWidth + 30, random(flying_dino_pos), 50, 50);
   flyngDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
