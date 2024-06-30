@@ -18,13 +18,13 @@ let trex,
 
   objObstacle1,
 
+  savedScore = localStorage.getItem('userRecord'),
+
   score = 0,
   maximumScore = savedScore ? savedScore : 0,
   gameState = "start",
   bg = 156,
   canJump = false,
-
-  savedScore = localStorage.getItem('userRecord'),
 
   jumpingSound,
   collideSound;
