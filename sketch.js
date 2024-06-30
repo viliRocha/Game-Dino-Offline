@@ -24,6 +24,7 @@ let trex,
   maximumScore = savedScore ? savedScore : 0,
   gameState = "start",
   bg = 156,
+  time = "day",
   canJump = false,
 
   jumpingSound,
@@ -81,7 +82,8 @@ function setup() {
   //Removing friction between Trex and ground
   ground.friction = 0;
 
-  //ground.collider ='static';
+  //This way I can set the flyingDinosaurs height as low as I want
+  ground.collider ='kinematic';
 
   //ground.debug = true;
 
@@ -98,8 +100,8 @@ function draw() {
 
   //Show player score and score record in screen
   fill("white");
-  text(score, windowWidth - 1300, windowHeight - 600);
-  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight - 600);
+  text(score, windowWidth - 1300, windowHeight - 530);
+  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight - 530);
 
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
@@ -148,6 +150,31 @@ function draw() {
 
       //Generate Pterodactylus at random heights for player to dodge
       generate_flyingDino();
+
+      //Day and night cycle 
+      if (time == "day") {
+        //moon.visible = false;
+        //Background will get clearer
+        bg = bg - 25;
+        //It will stay clear for some time...
+        setTimeout(() => {
+          if (bg <= 0) {
+            time = "night";
+          }
+        }, 4000)
+      }
+  
+      if (time == "night") {
+        //moon.visible = true;
+        //Background will get darker
+        bg = bg + 25;
+        //It will stay dark for some time...
+        setTimeout(() => {
+          if (bg >= 156) {
+            time = "day";
+          }
+        }, 4000)
+      }
     }
 
     //Trex dies
@@ -290,6 +317,9 @@ function reset() {
   trex.position.x = 80;
 
   gameState = "start";
+
+  time = "day";
+  bg = 156;
 
   //reset cactuses, clouds and Pterodactylus generation
   obstacleGroup.remove();
