@@ -1,3 +1,5 @@
+const savedScore = localStorage.getItem('userRecord');
+
 let trex,
   flyngDino,
   ground,
@@ -17,8 +19,6 @@ let trex,
   restart,
 
   objObstacle1,
-
-  savedScore = localStorage.getItem('userRecord'),
 
   score = 0,
   maximumScore = savedScore ? savedScore : 0,
@@ -61,7 +61,7 @@ function setup() {
   restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
 
-  trex = new Sprite(150, windowHeight - 150, 100, 100)
+  trex = new Sprite(150, windowHeight - 150, 100, 100);
   trex.addAnimation("dead", trexCollide);
   trex.addAnimation("trexWalk", texTrex);
   trex.addAnimation("trexDown", trexSprint);
@@ -100,7 +100,7 @@ function draw() {
 
   //Show player score and score record in screen
   fill("white");
-  text(score, windowWidth - 1300, windowHeight - 530);
+  text(score, windowWidth - 1200, windowHeight - 530);
   text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight - 530);
 
   //If player is already up in the air it can't jump
@@ -131,18 +131,18 @@ function draw() {
       canJump = false;
     }
     //Verify if player presses up arrow and Deno is not at sprinting anim to jump
-    else if (kb.presses('up') && trex.y >= windowHeight - 110 && canJump == true/*trex.animation.name == 'trexDown'*/) {
+    else if (kb.presses('up') && trex.y >= windowHeight - 110 && canJump == true) {
       trex.velocity.y = -20;
 
       jumpingSound.play();
     }
 
-    //console.log(trex.animation)
+    //console.log(trex.animation);
     generate_clouds();
     generate_cactuses();
 
     //If player has already been playing for some time && determined frameRate is reached
-    if (score >= 300 && frameCount % 100 == 0) {
+    if (score >= 300 && frameCount % 60 == 0) {
       //Make game slightly faster the more player plays
       trex.velocity.x = trex.velocity.x * 1.6;
       ground.velocity.x = ground.velocity.x * 1.6;
