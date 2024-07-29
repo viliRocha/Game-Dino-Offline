@@ -4,6 +4,7 @@ let trex,
   flyngDino,
   ground,
   clouds,
+  moon,
 
   texTrex,
   trexSprint,
@@ -87,8 +88,12 @@ function setup() {
 
   //ground.debug = true;
 
+  moon = new Sprite(windowWidth/2 + 300,windowHeight/2 - 150, 50, 50);
+  moon.image = "assets/moon.png";
+  moon.scale = 0.15;
+
   //Defining font style
-  textFont('Lucida Console', 27);
+  textFont('Fira Code', 27);
 
   cloudsGroup = new Group();
   obstacleGroup = new Group();
@@ -97,6 +102,8 @@ function setup() {
 
 function draw() {
   background(bg);
+
+  moon.tint = color(255, 255, 255, 255);
 
   //Show player score and score record in screen
   fill("white");
@@ -153,7 +160,6 @@ function draw() {
 
       //Day and night cycle 
       if (time == "day") {
-        //moon.visible = false;
         //Background will get clearer
         bg = bg - 25;
         //It will stay clear for some time...
@@ -165,7 +171,6 @@ function draw() {
       }
   
       if (time == "night") {
-        //moon.visible = true;
         //Background will get darker
         bg = bg + 25;
         //It will stay dark for some time...
@@ -176,7 +181,7 @@ function draw() {
         }, 4000)
       }
     }
-
+/*
     //Trex dies
     if (trex.collides(obstacleGroup) || trex.collides(flyingDinoGroup)) {
       gameOverTxt.show();
@@ -185,6 +190,7 @@ function draw() {
 
       gameState = "end";
     }
+      */
   }
 
   if (gameState == "end") {

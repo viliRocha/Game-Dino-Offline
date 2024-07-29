@@ -12,3 +12,9 @@ Includes features such as:
 - Simple interface with score and score record.
 - Sound effects for jumping and dying.
 - Day and night cycle.
+
+## Game images:
+
+![first_image](./game_IMG/GameImage1.png)
+
+![second_image](./game_IMG/GameImage2.png)
