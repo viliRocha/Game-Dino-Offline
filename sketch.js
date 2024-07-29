@@ -25,6 +25,7 @@ let trex,
   maximumScore = savedScore ? savedScore : 0,
   gameState = "start",
   bg = 156,
+  moonOpacity = 0,
   time = "day",
   canJump = false,
 
@@ -88,7 +89,7 @@ function setup() {
 
   //ground.debug = true;
 
-  moon = new Sprite(windowWidth/2 + 300,windowHeight/2 - 150, 50, 50);
+  moon = new Sprite(windowWidth/2 + 300,windowHeight/2 - 120, 50, 50);
   moon.image = "assets/moon.png";
   moon.scale = 0.15;
 
@@ -103,7 +104,7 @@ function setup() {
 function draw() {
   background(bg);
 
-  moon.tint = color(255, 255, 255, 255);
+  moon.tint = color(255, 255, 255, moonOpacity);
 
   //Show player score and score record in screen
   fill("white");
@@ -112,7 +113,7 @@ function draw() {
 
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
-    trex.velocity.y = trex.velocity.y + 1;
+    trex.velocity.y += 1;
   }
 
   //Give the impression player is moving
@@ -120,7 +121,7 @@ function draw() {
 
   //if player is alive
   if (gameState == "start") {
-    score = score + Math.round(getFrameRate() / 60);
+    score += Math.round(getFrameRate() / 60);
 
     restart.hide();
 
@@ -161,7 +162,9 @@ function draw() {
       //Day and night cycle 
       if (time == "day") {
         //Background will get clearer
-        bg = bg - 25;
+        bg -= 25;
+        //Moon will start to fade away
+        moonOpacity+= 25;
         //It will stay clear for some time...
         setTimeout(() => {
           if (bg <= 0) {
@@ -172,7 +175,9 @@ function draw() {
   
       if (time == "night") {
         //Background will get darker
-        bg = bg + 25;
+        bg += 25;
+        //Moon will get more visible
+        moonOpacity -= 25;
         //It will stay dark for some time...
         setTimeout(() => {
           if (bg >= 156) {
@@ -181,7 +186,7 @@ function draw() {
         }, 4000)
       }
     }
-/*
+
     //Trex dies
     if (trex.collides(obstacleGroup) || trex.collides(flyingDinoGroup)) {
       gameOverTxt.show();
@@ -190,7 +195,6 @@ function draw() {
 
       gameState = "end";
     }
-      */
   }
 
   if (gameState == "end") {
@@ -336,6 +340,4 @@ function reset() {
 
   trex.changeAnimation("trexWalk", texTrex);
   score = 0;
-
-  //bg = 156;
 }
