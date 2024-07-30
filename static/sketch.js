@@ -292,21 +292,10 @@ function generate_cactuses() {
 
   obstacleGroup.add(objObstacle1);
   //randomize which cactus will be generated
-  let choose_cactus = Math.round(random(1, 6));
+  let rng = Math.round(random(1, 6));
   // set image
-  objObstacle1.image = `/assets/obstacle${choose_cactus}.png`;
-  //
-  switch (choose_cactus) {
-    case 1:
-      objObstacle1.image.offset.y = 13;
-      break;
-    case 2:
-      objObstacle1.image.offset.y = 13;
-      break;
-    case 3:
-      objObstacle1.image.offset.y = 13;
-      break;
-  }
+  objObstacle1.image = `/assets/obstacle${rng}.png`;
+  objObstacle1.image.offset.y = rng <= 3 ? 13 : 0;
   //objObstacle1.debug = true;
 }
 
