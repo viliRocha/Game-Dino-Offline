@@ -21,6 +21,6 @@ Includes features such as:
 
 ## Game images:
 
-![first_image](./screenshots/GameImage1.png)
+![first_image](./screenshots/image.png)
 
 ![second_image](./screenshots/GameImage2.png)
