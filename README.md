@@ -1,6 +1,12 @@
 # Game-Dino-Offline
 
-A Google dinosaur game clone that I made using javascript, the p5play librarie and also electron.
+A Google dinosaur game clone that I made using javascript, the p5play library and also electron.
+
+## Execute the project
+
+to execute the project, use: `go run .` and then open http://localhost:8080 on your browser
+
+## More
 
 Here you can play it: **https://vilirocha.github.io/Game-Dino-Offline/**
 
