@@ -1,49 +1,50 @@
 const savedScore = localStorage.getItem('userRecord');
 
+// this is a giant list of all the variables used in the sketch, let's make this smaller
 let trex,
-  flyngDino,
-  ground,
-  clouds,
-  moon,
+    flyngDino,
+    ground,
+    clouds,
+    moon,
 
-  texTrex,
-  trexSprint,
-  trexCollide,
-  texFlyingDino,
+    texTrex,
+    trexSprint,
+    trexCollide,
+    texFlyingDino,
 
-  cloudsGroup,
-  obstacleGroup,
-  flyingDinoGroup,
+    cloudsGroup,
+    obstacleGroup,
+    flyingDinoGroup,
 
-  gameOverTxt,
+    gameOverTxt,
 
-  restart,
+    restart,
 
-  objObstacle1,
+    objObstacle1,
 
-  score = 0,
-  maximumScore = savedScore ? savedScore : 0,
-  gameState = "start",
-  bg = 156,
-  moonOpacity = 0,
-  time = "day",
-  canJump = false,
+    score = 0,
+    maximumScore = savedScore ? savedScore : 0,
+    gameState = "start",
+    bg = 156,
+    moonOpacity = 0,
+    time = "day",
+    canJump = false,
 
-  jumpingSound,
-  collideSound;
+    jumpingSound,
+    collideSound;
 
 function preload() {
   //Pterodactylus dinossaur enemy flying animation
-  texFlyingDino = loadAnimation("assets/bird1.png", "assets/bird2.webp");
+  texFlyingDino = loadAnimation("/assets/bird1.png", "/assets/bird2.webp");
 
   //Trex animations
-  texTrex = loadAnimation("assets/trex1.png", "assets/trex2.png", "assets/trex3.webp", "assets/trex4.webp");
-  trexSprint = loadAnimation("assets/TrexDown1.png", "assets/TrexDown2.png");
-  trexCollide = loadImage("assets/collide.webp");
+  texTrex = loadAnimation("/assets/trex1.png", "/assets/trex2.png", "/assets/trex3.webp", "/assets/trex4.webp");
+  trexSprint = loadAnimation("/assets/TrexDown1.png", "/assets/TrexDown2.png");
+  trexCollide = loadImage("/assets/collide.webp");
 
   //Player sound effects
-  jumpingSound = loadSound("./sound_FX/collided.wav");
-  collideSound = loadSound("./sound_FX/jump.wav");
+  jumpingSound = loadSound("/sounds/collided.wav");
+  collideSound = loadSound("/sounds/jump.wav");
 }
 
 function setup() {
@@ -54,12 +55,12 @@ function setup() {
   trexSprint.frameDelay = 10;
 
   //Loading the game over text that will apear when player dies
-  gameOverTxt = createImg("assets/gameOver.webp");
+  gameOverTxt = createImg("/assets/gameOver.webp");
   gameOverTxt.position(windowWidth / 2 - 254, windowHeight / 2 - 35);
   gameOverTxt.size(450, 45);
 
   //creating a restart button that will only be shown when player dies
-  restart = createImg("assets/restart.png");
+  restart = createImg("/assets/restart.png");
   restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
 
@@ -75,7 +76,7 @@ function setup() {
   trex.mass = 0;
 
   ground = new Sprite(windowWidth / 2, windowHeight - 30, windowWidth, 50);
-  ground.image = "assets/ground2.webp";
+  ground.image = "/assets/ground2.webp";
 
   ground.width = windowWidth * 7;
   ground.image.offset.y = -30;
@@ -85,12 +86,12 @@ function setup() {
   ground.friction = 0;
 
   //This way I can set the flyingDinosaurs height as low as I want
-  ground.collider ='kinematic';
+  ground.collider = 'kinematic';
 
   //ground.debug = true;
 
   moon = new Sprite(windowWidth/2 + 300,windowHeight/2 - 120, 50, 50);
-  moon.image = "assets/moon.webp";
+  moon.image = "/assets/moon.webp";
   moon.scale = 0.15;
 
   //Defining font style
@@ -131,15 +132,13 @@ function draw() {
     if (ground.x <= -windowWidth - 2200) {
       ground.x = ground.width / 2;
     }
-
+    //
     if (kb.presses('down')) {
       //   (distance, direction, speed)
       trex.changeAnimation("trexDown", trexSprint);
 
       canJump = false;
-    }
-    //Verify if player presses up arrow and Deno is not at sprinting anim to jump
-    else if (kb.presses('up') && trex.y >= windowHeight - 110 && canJump == true) {
+    } else if (kb.presses('up') && trex.y >= windowHeight - 110 && canJump == true) { //Verify if player presses up arrow and Deno is not at sprinting anim to jump
       trex.velocity.y = -20;
 
       jumpingSound.play();
@@ -171,20 +170,17 @@ function draw() {
             time = "night";
           }
         }, 4000)
+        // if it's day, then the function ends here
+        return
       }
-  
-      if (time == "night") {
-        //Background will get darker
-        bg += 25;
-        //Moon will get more visible
-        moonOpacity -= 25;
-        //It will stay dark for some time...
-        setTimeout(() => {
-          if (bg >= 156) {
-            time = "day";
-          }
-        }, 4000)
-      }
+      
+      // if is not day, then it is night
+      //Background will get darker
+      bg += 25;
+      //Moon will get more visible
+      moonOpacity -= 25;
+      //It will stay dark for some time...
+      setTimeout(() => time = b >= 156 ? "day" : "night", 4000)
     }
 
     //Trex dies
@@ -218,87 +214,91 @@ function draw() {
 
     restart.show();
 
-    if (mouse.presses()) {
-      reset();
-    }
+    document.body.addEventListener("click", () => {
+      //reset Dino's position in case it dies in some weird position
+      trex.position.y = 550;
+      trex.position.x = 80;
 
-    //Check for new player score record
-    if (score > maximumScore) {
-      maximumScore = score;
+      gameState = "start";
 
-      //Save player maximum score so if the page is reloaded player will still have its score record saved
-      localStorage.setItem("userRecord", maximumScore);
-    }
+      time = "day";
+      bg = 156;
+
+      //reset cactuses, clouds and Pterodactylus generation
+      obstacleGroup.remove();
+
+      flyingDinoGroup.remove();
+
+      cloudsGroup.remove();
+
+      trex.changeAnimation("trexWalk", texTrex);
+      score = 0;
+    })
+
+    maximumScore = score > maximumScore ? score : maximumScore;
+
+    //Save player maximum score so if the page is reloaded player will still have its score record saved
+    localStorage.setItem("userRecord", maximumScore);
   }
 }
 
 //Check if Down arrow was released
-function keyReleased() {
-  if (keyCode == 40) {
-    trex.changeAnimation("trexWalk", texTrex);
-
-    canJump = true;
-  }
-}
+document.body.addEventListener("keyup", e => {
+  if (e.key != "ArrowDown" && e.key != "s") { return }
+  // if the arrow pressed is down or s:
+  trex.changeAnimation("trexWalk", texTrex);
+  canJump = true;
+});
 
 function generate_clouds() {
-  if (frameCount % 60 == 0) {
-    clouds = new Sprite(windowWidth + 30, random(100, 500), 90, 40);
-    clouds.image = "assets/cloud.png";
+  if (frameCount % 60 != 0) { return }
+  //
+  clouds = new Sprite(windowWidth + 30, random(100, 500), 90, 40);
+  clouds.image = "/assets/cloud.png";
 
-    //Clouds shouldn't collide with anything
-    clouds.collider = 'none';
+  //Clouds shouldn't collide with anything
+  clouds.collider = 'none';
 
-    clouds.velocity.x = -4;
-    //Desapear after the get off screen, so game keeps performance
-    clouds.life = 350;
+  clouds.velocity.x = -4;
+  //Desapear after the get off screen, so game keeps performance
+  clouds.life = 350;
 
-    cloudsGroup.add(clouds);
-  }
+  cloudsGroup.add(clouds);
 }
 
 function generate_cactuses() {
-  if (frameCount % 70 == 0) {
-    objObstacle1 = new Sprite(windowWidth + 30, windowHeight - 100, 50, 70);
+  if (frameCount % 70 != 0) { return }
+  //
+  objObstacle1 = new Sprite(windowWidth + 30, windowHeight - 100, 50, 70);
 
-    //setting cactuses weight to 0 because otherwise, it would filp the floor
-    objObstacle1.mass = 0;
+  //setting cactuses weight to 0 because otherwise, it would filp the floor
+  objObstacle1.mass = 0;
 
-    //This way cactuses can't collide with Pterodactylus but can with the player
-    objObstacle1.collider = 'kinematic';
+  //This way cactuses can't collide with Pterodactylus but can with the player
+  objObstacle1.collider = 'kinematic';
 
-    objObstacle1.velocity.x = -8;
-    //Setting life time to cactuses too
-    objObstacle1.life = 180;
+  objObstacle1.velocity.x = -8;
+  //Setting life time to cactuses too
+  objObstacle1.life = 180;
 
-    obstacleGroup.add(objObstacle1);
-    //randomize which cactus will be generated
-    let choose_cactus = Math.round(random(1, 6));
-    switch (choose_cactus) {
-      case 1:
-        objObstacle1.image = "assets/obstacle1.png";
-        objObstacle1.image.offset.y = 13;
-        break;
-      case 2:
-        objObstacle1.image = "assets/obstacle2.png";
-        objObstacle1.image.offset.y = 13;
-        break;
-      case 3:
-        objObstacle1.image = "assets/obstacle3.png";
-        objObstacle1.image.offset.y = 13;
-        break;
-      case 4:
-        objObstacle1.image = "assets/obstacle4.png";
-        break;
-      case 5:
-        objObstacle1.image = "assets/obstacle5.png";
-        break;
-      case 6:
-        objObstacle1.image = "assets/obstacle6.png";
-        break;
-    }
-    //objObstacle1.debug = true;
+  obstacleGroup.add(objObstacle1);
+  //randomize which cactus will be generated
+  let choose_cactus = Math.round(random(1, 6));
+  // set image
+  objObstacle1.image = `/assets/obstacle${choose_cactus}.png`;
+  //
+  switch (choose_cactus) {
+    case 1:
+      objObstacle1.image.offset.y = 13;
+      break;
+    case 2:
+      objObstacle1.image.offset.y = 13;
+      break;
+    case 3:
+      objObstacle1.image.offset.y = 13;
+      break;
   }
+  //objObstacle1.debug = true;
 }
 
 function generate_flyingDino() {
@@ -318,26 +318,4 @@ function generate_flyingDino() {
   //flyngDino.debug = true;
 
   flyingDinoGroup.add(flyngDino);
-}
-
-//Called when player clicks on button to play again
-function reset() {
-  //reset Dino's position in case it dies in some weird position
-  trex.position.y = 550;
-  trex.position.x = 80;
-
-  gameState = "start";
-
-  time = "day";
-  bg = 156;
-
-  //reset cactuses, clouds and Pterodactylus generation
-  obstacleGroup.remove();
-
-  flyingDinoGroup.remove();
-
-  cloudsGroup.remove();
-
-  trex.changeAnimation("trexWalk", texTrex);
-  score = 0;
 }

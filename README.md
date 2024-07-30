@@ -4,7 +4,7 @@ A Google dinosaur game clone that I made using javascript, the p5play librarie a
 
 Here you can play it: **https://vilirocha.github.io/Game-Dino-Offline/**
 
-Includes features such as: 
+Includes features such as:
 
 - The ability to jump and sprint with the dinosaur.
 - On ground and flying obstacles.
@@ -15,6 +15,6 @@ Includes features such as:
 
 ## Game images:
 
-![first_image](./game_IMG/GameImage1.png)
+![first_image](./screenshots/GameImage1.png)
 
-![second_image](./game_IMG/GameImage2.png)
+![second_image](./screenshots/GameImage2.png)
