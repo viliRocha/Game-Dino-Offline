@@ -34,12 +34,12 @@ let trex,
 
 function preload() {
   //Pterodactylus dinossaur enemy flying animation
-  texFlyingDino = loadAnimation("assets/bird1.png", "assets/bird2.png");
+  texFlyingDino = loadAnimation("assets/bird1.png", "assets/bird2.webp");
 
   //Trex animations
-  texTrex = loadAnimation("assets/trex1.png", "assets/trex2.png", "assets/trex3.png", "assets/trex4.png");
+  texTrex = loadAnimation("assets/trex1.png", "assets/trex2.png", "assets/trex3.webp", "assets/trex4.webp");
   trexSprint = loadAnimation("assets/TrexDown1.png", "assets/TrexDown2.png");
-  trexCollide = loadImage("assets/collide.png");
+  trexCollide = loadImage("assets/collide.webp");
 
   //Player sound effects
   jumpingSound = loadSound("./sound_FX/collided.wav");
@@ -54,7 +54,7 @@ function setup() {
   trexSprint.frameDelay = 10;
 
   //Loading the game over text that will apear when player dies
-  gameOverTxt = createImg("assets/gameOver.png");
+  gameOverTxt = createImg("assets/gameOver.webp");
   gameOverTxt.position(windowWidth / 2 - 254, windowHeight / 2 - 35);
   gameOverTxt.size(450, 45);
 
@@ -75,7 +75,7 @@ function setup() {
   trex.mass = 0;
 
   ground = new Sprite(windowWidth / 2, windowHeight - 30, windowWidth, 50);
-  ground.image = "assets/ground2.png";
+  ground.image = "assets/ground2.webp";
 
   ground.width = windowWidth * 7;
   ground.image.offset.y = -30;
@@ -90,7 +90,7 @@ function setup() {
   //ground.debug = true;
 
   moon = new Sprite(windowWidth/2 + 300,windowHeight/2 - 120, 50, 50);
-  moon.image = "assets/moon.png";
+  moon.image = "assets/moon.webp";
   moon.scale = 0.15;
 
   //Defining font style
