@@ -29,10 +29,11 @@ let trex,
     bg = 156,
     moonOpacity = 0,
     time = "day",
-    canJump = false,
+    canJump = true,
 
     jumpingSound,
-    collideSound;
+    collideSound,
+    onGround = true;
 
 function preload() {
   //Pterodactylus dinossaur enemy flying animation
@@ -75,10 +76,9 @@ function setup() {
 
   trex = new Sprite(150, windowHeight - 150, 100, 100);
   trex.addAnimation("dead", trexCollide);
-  trex.addAnimation("trexWalk", texTrex);
   trex.addAnimation("trexDown", trexSprint);
+  trex.addAnimation("trexWalk", texTrex);
 
-  trex.animation.offset.y = 15;
   trex.scale = 1;
 
   //Defining player's weight, player's mass is 0 because otherwise, it would flip the floor
@@ -127,17 +127,22 @@ function draw() {
   }
 
   //Give the impression player is moving
+  // my idea: make the ground animation move and not the object itself
   ground.velocity.x = -8;
+
+  // existe um bug que acontece por uma fração de segundo quando um novo chão é renderizado, que o player atravessa o chão
+  onGround = Math.round(trex.y) >= Math.round(ground.y - ground.height) - 30;
+  // ground y: 754 trex y: 783
 
   //if player is alive
   if (gameState == "start") {
     score += Math.round(getFrameRate() / 60);
 
     restart.hide();
-
     gameOverTxt.hide();
 
     //Generate a new ground in front of the other one otherwise player would fall(ground has speed)
+    // with my idea, the ground animation moves and not the object itself, so this wouldn't be necessary
     if (ground.x <= -windowWidth - 2200) {
       ground.x = ground.width / 2;
     }
@@ -145,9 +150,10 @@ function draw() {
     if (kb.presses('down')) {
       //   (distance, direction, speed)
       trex.changeAnimation("trexDown", trexSprint);
+      trex.animation.offset.y = 15;
 
       canJump = false;
-    } else if (kb.presses('up') && trex.y >= windowHeight - 110 && canJump == true) { //Verify if player presses up arrow and Deno is not at sprinting anim to jump
+    } else if (kb.presses('up') && canJump == true && onGround) { //Verify if player presses up arrow and Deno is not at sprinting anim to jump
       trex.velocity.y = -20;
 
       jumpingSound.play();
@@ -175,9 +181,8 @@ function draw() {
         moonOpacity+= 25;
         //It will stay clear for some time...
         setTimeout(() => {
-          if (bg <= 0) {
-            time = "night";
-          }
+          if (bg > 0) { return }
+          time = "night";
         }, 4000)
         // if it's day, then the function ends here
         return
@@ -203,6 +208,7 @@ function draw() {
   }
 
   if (gameState == "end") {
+    // bug da lua, continua andando mesmo o jogo tendo acabado ou resetado, sua posição não é resetada
     trex.changeAnimation("dead", trexCollide);
 
     trex.velocity.x = 0;
@@ -256,6 +262,7 @@ document.body.addEventListener("keyup", e => {
   if (e.key != "ArrowDown" && e.key != "s") { return }
   // if the arrow pressed is down or s:
   trex.changeAnimation("trexWalk", texTrex);
+  trex.animation.offset.y = 0;
   canJump = true;
 });
 
@@ -301,10 +308,9 @@ function generate_cactuses() {
 
 function generate_flyingDino() {
   //Possible heihts for flying dino to spawn in
-  let flying_dino_pos = [300, 542];
   texFlyingDino.frameDelay = 14;
 
-  flyngDino = new Sprite(windowWidth + 30, random(flying_dino_pos), 50, 50);
+  flyngDino = new Sprite(windowWidth + 30, random(300, 542), 50, 50);
   flyngDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
