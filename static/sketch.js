@@ -25,7 +25,7 @@ let trex,
 
     score = 0,
     maximumScore = savedScore ? savedScore : 0,
-    end = "start",
+    gameState = "start",
     bg = 156,
     moonOpacity = 0,
     time = "day",
@@ -80,7 +80,9 @@ function setup() {
 
   trex.animation.offset.y = 15;
   trex.scale = 1;
-  trex.mass = 0;                     //Defining player's weight, player's mass is 0 because otherwise, it would flip the floor
+
+  //Defining player's weight, player's mass is 0 because otherwise, it would flip the floor
+  trex.mass = 0;
 
   ground = new Sprite(windowWidth / 2, windowHeight - 30, windowWidth, 50);
   ground.image = "/assets/ground2.webp";
@@ -88,8 +90,12 @@ function setup() {
   ground.width = windowWidth * 7;
   ground.image.offset.y = -30;
   ground.scale = 0.9;
-  ground.friction = 0;              //Removing friction between Trex and ground
-  ground.collider = 'kinematic';    //This way I can set the flyingDinosaurs height as low as I want
+
+  //Removing friction between Trex and ground
+  ground.friction = 0;
+
+  //This way I can set the flyingDinosaurs height as low as I want
+  ground.collider = 'kinematic';
 
   //ground.debug = true;
 
@@ -124,7 +130,7 @@ function draw() {
   ground.velocity.x = -8;
 
   //if player is alive
-  if (end == false) {
+  if (gameState == "start") {
     score += Math.round(getFrameRate() / 60);
 
     restart.hide();
@@ -192,11 +198,11 @@ function draw() {
 
       collideSound.play();
 
-      end = true;
+      gameState = "end";
     }
   }
 
-  if (end == true) {
+  if (gameState == "end") {
     trex.changeAnimation("dead", trexCollide);
 
     trex.velocity.x = 0;
@@ -222,14 +228,16 @@ function draw() {
       trex.position.y = 550;
       trex.position.x = 80;
 
-      end = false;
+      gameState = "start";
 
       time = "day";
       bg = 156;
 
       //reset cactuses, clouds and Pterodactylus generation
       obstacleGroup.remove();
+
       flyingDinoGroup.remove();
+
       cloudsGroup.remove();
 
       trex.changeAnimation("trexWalk", texTrex);
@@ -284,11 +292,11 @@ function generate_cactuses() {
 
   obstacleGroup.add(objObstacle1);
   //randomize which cactus will be generated
-  let rng = Math.round(random(1, 6));
+  let choose_cactus = Math.round(random(1, 6));
   // set image
   objObstacle1.image = `/assets/obstacle${choose_cactus}.png`;
   //
-  switch (rng) {
+  switch (choose_cactus) {
     case 1:
       objObstacle1.image.offset.y = 13;
       break;
