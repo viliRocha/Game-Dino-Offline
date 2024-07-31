@@ -22,6 +22,6 @@ jobs:
         go-version: '1.22.5'
 
     - name: Build the Docker image
-      run: docker build -t Dockerfile .
+      run: docker build -t dockerfile .
     - name: Run the container
-      run: docker run -d Dockerfile
+      run: docker run -d dockerfile
