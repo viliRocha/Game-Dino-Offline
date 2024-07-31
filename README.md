@@ -6,6 +6,11 @@ A Google dinosaur game clone that I made using javascript, the p5play library an
 
 to execute the project, use: `go run .` and then open http://localhost:8080 on your browser
 
+## Game controls
+
+- Up arrow to jump
+- Down arrow to sprint
+
 ## More
 
 Here you can play it: **https://vilirocha.github.io/Game-Dino-Offline/**

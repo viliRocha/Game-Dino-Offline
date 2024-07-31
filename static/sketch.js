@@ -102,7 +102,7 @@ function setup() {
   moon = new Sprite(windowWidth/2 + 300,windowHeight/2 - 120, 50, 50);
   moon.image = "/assets/moon.webp";
   moon.scale = 0.15;
-  moon.collider = 'kinematic';
+  moon.collider = 'none';
 
   //Defining font style
   textFont('Fira Code', 27);
@@ -239,6 +239,7 @@ function draw() {
 
       time = "day";
       bg = 156;
+      moonOpacity = 0;
 
       //reset cactuses, clouds and Pterodactylus generation
       obstacleGroup.remove();
