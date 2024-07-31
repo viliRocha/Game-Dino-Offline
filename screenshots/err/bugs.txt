@@ -1,0 +1,3 @@
+in the video, if you watch closely, you can see that the dinossaur hits the moon and drags it away, and the position of this object isn't reseted, so the moon keeps on flying away from the screen.
+
+The video is unavaliable because of github limit of file size, I will compact it and upload it later or upload it to youtube.
