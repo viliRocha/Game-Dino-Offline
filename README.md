@@ -7,7 +7,7 @@ I'm trying to deploy this project to be acessible using github-pages, but this i
 
 ## Execute the project
 
-to execute the project, use: `go run .` and then open http://localhost:8080 on your browser
+to execute the project localy, use: `go run .` and then open http://localhost:8080 on your browser
 
 build the project: `go build -o dino`
 
