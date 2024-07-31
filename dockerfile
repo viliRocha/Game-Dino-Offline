@@ -10,3 +10,4 @@ COPY . .
 RUN go build -o dino
 
 CMD ["./dino"]
+expose 8080
