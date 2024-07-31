@@ -6,10 +6,7 @@ A Google dinosaur game clone that I made using javascript, the p5play library an
 
 to execute the project, use: `go run .` and then open http://localhost:8080 on your browser
 
-## Game controls
-
-- Up arrow to jump
-- Down arrow to sprint
+build the project: `go build -o dino`
 
 ## More
 
