@@ -24,8 +24,8 @@ let trex,
     objObstacle1,
 
     score = 0,
-    maximumScore = savedScore ? savedScore : 0,
-    gameState = "start",
+    maximumScore = savedScore,
+    endGame = false,
     bg = 156,
     moonOpacity = 0,
     time = "day",
@@ -136,7 +136,7 @@ function draw() {
   // ground y: 754 trex y: 783
 
   //if player is alive
-  if (gameState == "start") {
+  if (!endGame) {
     score += Math.round(getFrameRate() / 60);
 
     restart.hide();
@@ -204,59 +204,57 @@ function draw() {
 
       collideSound.play();
 
-      gameState = "end";
+      endGame = true;
     }
+    return
   }
+  // bug da lua, continua andando mesmo o jogo tendo acabado ou resetado, sua posição não é resetada
+  trex.changeAnimation("dead", trexCollide);
 
-  if (gameState == "end") {
-    // bug da lua, continua andando mesmo o jogo tendo acabado ou resetado, sua posição não é resetada
-    trex.changeAnimation("dead", trexCollide);
+  trex.velocity.x = 0;
+  ground.velocity.x = 0;
 
-    trex.velocity.x = 0;
-    ground.velocity.x = 0;
+  //obstacles need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
+  obstacleGroup.collider = 'static';
 
-    //obstacles need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
-    obstacleGroup.collider = 'static';
+  obstacleGroup.life = Infinity;
 
-    obstacleGroup.life = Infinity;
+  flyingDinoGroup.collider = 'static';
 
-    flyingDinoGroup.collider = 'static';
+  flyingDinoGroup.life = Infinity;
 
-    flyingDinoGroup.life = Infinity;
+  cloudsGroup.collider = 'static';
 
-    cloudsGroup.collider = 'static';
+  cloudsGroup.life = Infinity;
 
-    cloudsGroup.life = Infinity;
+  restart.show();
 
-    restart.show();
+  document.body.addEventListener("click", () => {
+    //reset Dino's position in case it dies in some weird position
+    trex.position.y = 550;
+    trex.position.x = 80;
 
-    document.body.addEventListener("click", () => {
-      //reset Dino's position in case it dies in some weird position
-      trex.position.y = 550;
-      trex.position.x = 80;
+    endGame = false;
 
-      gameState = "start";
+    time = "day";
+    bg = 156;
+    moonOpacity = 0;
 
-      time = "day";
-      bg = 156;
-      moonOpacity = 0;
+    //reset cactuses, clouds and Pterodactylus generation
+    obstacleGroup.remove();
 
-      //reset cactuses, clouds and Pterodactylus generation
-      obstacleGroup.remove();
+    flyingDinoGroup.remove();
 
-      flyingDinoGroup.remove();
+    cloudsGroup.remove();
 
-      cloudsGroup.remove();
+    trex.changeAnimation("trexWalk", texTrex);
+    score = 0;
+  })
 
-      trex.changeAnimation("trexWalk", texTrex);
-      score = 0;
-    })
+  maximumScore = score > maximumScore ? score : maximumScore;
 
-    maximumScore = score > maximumScore ? score : maximumScore;
-
-    //Save player maximum score so if the page is reloaded player will still have its score record saved
-    localStorage.setItem("userRecord", maximumScore);
-  }
+  //Save player maximum score so if the page is reloaded player will still have its score record saved
+  localStorage.setItem("userRecord", maximumScore); 
 }
 
 //Check if Down arrow was released
