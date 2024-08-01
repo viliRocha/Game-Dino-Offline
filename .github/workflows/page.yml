@@ -25,3 +25,14 @@ jobs:
       run: docker build -t dockerfile .
     - name: Run the container
       run: docker run -d dockerfile
+      
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
