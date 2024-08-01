@@ -47,9 +47,9 @@ function preload() {
   trexCollide = loadImage("/assets/collide.webp");
 
   //Player sound effects
-  jumpingSound = loadSound("/sounds/jump.mp3");
-  collideSound = loadSound("/sounds/collided.mp3");
-  pointsSound = loadSound("/sounds/point.mp3")
+  jumpingSound = loadSound("/sounds/jump.wav");
+  collideSound = loadSound("/sounds/collided.wav");
+  pointsSound = loadSound("/sounds/point.wav")
 }
 
 function setup() {
@@ -79,7 +79,7 @@ function setup() {
 
   moon = new Sprite(windowWidth/2 + 300, windowHeight - 100, 50, 50);
   moon.image = "/assets/moon.webp";
-  moon.scale = 0.15;
+  moon.scale = 0.20;
   moon.collider = 'none';
 
   trex = new Sprite(150, windowHeight - 150, 100, 100);
@@ -118,7 +118,7 @@ function setup() {
 function draw() {
   background(bg);
 
-  moon.tint = color(255, 255, 255, moonOpacity);
+  moon.tint = color(255, 255, 255, 255);
 
   //Show player score and score record in screen
   fill("white");
@@ -191,18 +191,18 @@ function draw() {
         bg -= 25;
         //Moon will start to fade away
         moonOpacity += 25;
-        moon.velocity.y = -0.2;
-        /*
-        if (moon.position.y = windowHeight/2 - 120) {
+        if (moon.y != windowHeight/2 - 120) {
+          moon.velocity.y = -0.5;
+        }
+        else {
           moon.velocity.y = 0;
         }
-          */
         //It will stay clear for some time...
         setTimeout(() => {
           if (bg > 0) {
             time = "night";
           }
-        }, 5000)
+        }, 8000)
       }
       else {
         // if is not day, then it is night
@@ -210,18 +210,18 @@ function draw() {
         bg += 25;
         //Moon will get more visible
         moonOpacity -= 25;
-        moon.velocity.y = -0.2;
-        /*
-        if (moon.position.y = windowHeight - 100) {
+        if (moon.y != windowHeight - 100) {
+          moon.velocity.y = 0.5;
+        }
+        else {
           moon.velocity.y = 0;
         }
-        */
         //It will stay dark for some time...
         setTimeout(() => {
           if (bg >= 156) {
             time = "day";
           }
-        }, 5000)
+        }, 8000)
       }
     }
 
