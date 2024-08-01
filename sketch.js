@@ -28,11 +28,13 @@ let trex,
     gameState = "start",
     bg = 156,
     moonOpacity = 0,
+    textColor = 255,
     time = "day",
     canJump = true,
 
     jumpingSound,
     collideSound,
+    pointsSound,
     onGround = true;
 
 function preload() {
@@ -40,13 +42,14 @@ function preload() {
   texFlyingDino = loadAnimation("/assets/bird1.png", "/assets/bird2.webp");
 
   //Trex animations
-  texTrex = loadAnimation("/assets/trex1.png", "/assets/trex2.png", "/assets/trex3.webp", "/assets/trex4.webp");
+  texTrex = loadAnimation("/assets/trex1.png", "/assets/trex2.webp", "/assets/trex3.webp");
   trexSprint = loadAnimation("/assets/TrexDown1.png", "/assets/TrexDown2.png");
   trexCollide = loadImage("/assets/collide.webp");
 
   //Player sound effects
-  jumpingSound = loadSound("/sounds/collided.wav");
-  collideSound = loadSound("/sounds/jump.wav");
+  jumpingSound = loadSound("/sounds/jump.mp3");
+  collideSound = loadSound("/sounds/collided.mp3");
+  pointsSound = loadSound("/sounds/point.mp3")
 }
 
 function setup() {
@@ -74,6 +77,11 @@ function setup() {
   restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
 
+  moon = new Sprite(windowWidth/2 + 300, windowHeight - 100, 50, 50);
+  moon.image = "/assets/moon.webp";
+  moon.scale = 0.15;
+  moon.collider = 'none';
+
   trex = new Sprite(150, windowHeight - 150, 100, 100);
   trex.addAnimation("dead", trexCollide);
   trex.addAnimation("trexDown", trexSprint);
@@ -99,11 +107,6 @@ function setup() {
 
   //ground.debug = true;
 
-  moon = new Sprite(windowWidth/2 + 300,windowHeight/2 - 120, 50, 50);
-  moon.image = "/assets/moon.webp";
-  moon.scale = 0.15;
-  moon.collider = 'none';
-
   //Defining font style
   textFont('Fira Code', 27);
 
@@ -119,17 +122,20 @@ function draw() {
 
   //Show player score and score record in screen
   fill("white");
+  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight - 530);//MaxScore goes before scrore beacuse it will not blink
+  fill(255, 255, 255, textColor);
   text(score, windowWidth - 1200, windowHeight - 530);
-  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight - 530);
 
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
     trex.velocity.y += 1;
   }
 
-  //Give the impression player is moving
-  // my idea: make the ground animation move and not the object itself
-  ground.velocity.x = -8;
+  if (score % 200 == 0) {
+    pointsSound.play();
+
+    blink_text();
+  }
 
   // existe um bug que acontece por uma fração de segundo quando um novo chão é renderizado, que o player atravessa o chão
   onGround = Math.round(trex.y) >= Math.round(ground.y - ground.height) - 30;
@@ -141,6 +147,10 @@ function draw() {
 
     restart.hide();
     gameOverTxt.hide();
+
+    //Give the impression player is moving
+    // my idea: make the ground animation move and not the object itself
+    ground.velocity.x = -8;
 
     //Generate a new ground in front of the other one otherwise player would fall(ground has speed)
     // with my idea, the ground animation moves and not the object itself, so this wouldn't be necessary
@@ -154,7 +164,8 @@ function draw() {
       trex.animation.offset.y = 15;
 
       canJump = false;
-    } else if (kb.presses('up') && canJump == true && onGround) { //Verify if player presses up arrow and Deno is not at sprinting anim to jump
+    }
+    else if (kb.presses('up') && canJump == true && onGround) { //Verify if player presses up arrow and Deno is not at sprinting anim to jump
       trex.velocity.y = -20;
 
       jumpingSound.play();
@@ -179,26 +190,43 @@ function draw() {
         //Background will get clearer
         bg -= 25;
         //Moon will start to fade away
-        moonOpacity+= 25;
+        moonOpacity += 25;
+        moon.velocity.y = -0.2;
+        /*
+        if (moon.position.y = windowHeight/2 - 120) {
+          moon.velocity.y = 0;
+        }
+          */
         //It will stay clear for some time...
         setTimeout(() => {
-          if (bg > 0) { return }
-          time = "night";
-        }, 4000)
-        // if it's day, then the function ends here
-        return
+          if (bg > 0) {
+            time = "night";
+          }
+        }, 5000)
       }
-      
-      // if is not day, then it is night
-      //Background will get darker
-      bg += 25;
-      //Moon will get more visible
-      moonOpacity -= 25;
-      //It will stay dark for some time...
-      setTimeout(() => time = b >= 156 ? "day" : "night", 4000)
+      else {
+        // if is not day, then it is night
+        //Background will get darker
+        bg += 25;
+        //Moon will get more visible
+        moonOpacity -= 25;
+        moon.velocity.y = -0.2;
+        /*
+        if (moon.position.y = windowHeight - 100) {
+          moon.velocity.y = 0;
+        }
+        */
+        //It will stay dark for some time...
+        setTimeout(() => {
+          if (bg >= 156) {
+            time = "day";
+          }
+        }, 5000)
+      }
     }
 
     //Trex dies
+    /*
     if (trex.collides(obstacleGroup) || trex.collides(flyingDinoGroup)) {
       gameOverTxt.show();
 
@@ -206,6 +234,7 @@ function draw() {
 
       gameState = "end";
     }
+      */
   }
 
   if (gameState == "end") {
@@ -268,6 +297,19 @@ document.body.addEventListener("keyup", e => {
   canJump = true;
 });
 
+//Make the score text blink
+function blink_text() {
+  textColor = (textColor === 255) ? 0 : 255;
+  /*
+  if (frameCount % 60 == 0) {
+    textColor = 0; // Set text color to black
+  } 
+  else if (frameCount % 30 == 0) {
+    textColor = 255; // Set text color to white
+  }
+  */
+}
+
 function generate_clouds() {
   if (frameCount % 60 != 0) { return }
   //
@@ -301,7 +343,7 @@ function generate_cactuses() {
 
   obstacleGroup.add(objObstacle1);
   //randomize which cactus will be generated
-  let rng = Math.round(random(1, 6));
+  const rng = Math.round(random(1, 6));
   // set image
   objObstacle1.image = `/assets/obstacle${rng}.png`;
   objObstacle1.image.offset.y = rng <= 3 ? 13 : 0;
