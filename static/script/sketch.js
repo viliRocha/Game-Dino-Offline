@@ -80,6 +80,8 @@ function setup() {
   trex.addAnimation("trexWalk", texTrex);
 
   trex.scale = 1;
+  // this is just for testing, remove when done (just mark as a comment)
+  //trex.collider = 'kinematic';
 
   // Defining player's weight, player's mass is 0 because otherwise, it would flip the floor
   trex.mass = 0;
@@ -175,32 +177,34 @@ function draw() {
       generate_flyingDino();
 
       // Day and night cycle 
-      if (day == true) {
-        // Background will get clearer
+      dayTime: {
+        //Day and night cycle 
+        if (day) {
+          //Background will get clearer
+          bg -= 25;
+          //Moon will start to fade away
+          moonOpacity+= 25;
+          //It will stay clear for some time...
+          setTimeout(() => {
+            if (bg <= 0) {
+              day = false;
+            }
+          }, 4000)
+
+          break dayTime;
+        }
+    
+        //Background will get darker
         bg += 25;
-        //Moon will start to fade away
+        //Moon will get more visible
         moonOpacity -= 25;
-        // if it's day, then the function ends here
-        // It will stay clear for some time...
+        //It will stay dark for some time...
         setTimeout(() => {
-          if (bg > 0) { return }
-          day = false;
+          if (bg >= 156) {
+            day = true;
+          }
         }, 4000)
-        return
       }
-      
-      // if is not day, then it is night
-      // Background will get darker
-      bg -= 25;
-      //Moon will get more visible
-      moonOpacity += 25;
-      // It will stay dark for some time...
-      // corrigir problema no ciclo de dia e noite
-      // It will stay clear for some time...
-      setTimeout(() => {
-        if (bg <= 0) { return }
-        day = true;
-      }, 4000)
     }
 
     // Trex dies
@@ -225,10 +229,8 @@ function draw() {
 
   restart.show();
 
-  document.body.addEventListener("click", restartGame)
-  document.body.addEventListener("keydown", () => {
-    if (endGame) { restartGame() }
-  })
+  document.body.addEventListener("click",  restartGame)
+  document.body.addEventListener("keydown", restartGame)
 
   maximumScore = score > maximumScore ? score : maximumScore;
 
@@ -246,6 +248,7 @@ document.body.addEventListener("keyup", e => {
 });
 
 function restartGame() {
+  if (!endGame) { return }
   // reset Dino's position in case it dies in some weird position
   trex.position.y = 550;
   trex.position.x = 80;
