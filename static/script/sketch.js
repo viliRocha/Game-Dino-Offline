@@ -13,27 +13,29 @@ let trex,
     trexCollide,
     texFlyingDino,
 
+    // clouds and obstacles
     cloudsGroup,
     obstacleGroup,
     flyingDinoGroup,
-
-    gameOverTxt,
-
-    restart,
-
     objObstacle1,
 
+    // death screen
+    gameOverTxt,
+    restart,
+
+    // info
     score = 0,
     maximumScore = savedScore,
     endGame = false,
     bg = 156,
     moonOpacity = 0,
-    time = "day",
+    day = true,
     canJump = true,
+    onGround = true,
 
+    // sounds
     jumpingSound,
-    collideSound,
-    onGround = true;
+    collideSound;
 
 function preload() {
   // Pterodactylus dinossaur enemy flying animation
@@ -98,7 +100,6 @@ function setup() {
 
   // This way I can set the flyingDinosaurs height as low as I want
   ground.collider = 'kinematic';
-
   // ground.debug = true;
 
   moon = new Sprite(windowWidth/2 + 300,windowHeight/2 - 120, 50, 50);
@@ -146,6 +147,9 @@ function draw() {
 
     // Generate a new ground in front of the other one otherwise player would fall(ground has speed)
     // with my idea, the ground animation moves and not the object itself, so this wouldn't be necessary
+    // verificar se o ground andou o seu proprio tamanho / 2, se for, então ele não precisa de gerar um novo ground
+    // a ideia e ter dois objetos 'ground' que trocam de prosições entre si
+
     if (ground.x <= -windowWidth - 2200) {
       ground.x = ground.width / 2;
     }
@@ -169,7 +173,7 @@ function draw() {
     // If player has already been playing for some time && determined frameRate is reached
     if (score >= 300 && frameCount % 60 == 0) {
       //Make game slightly faster the more player plays
-      trex.velocity.x = trex.velocity.x * 1.6;
+      trex.velocity.x += trex.velocity.x * 1.6;
       ground.velocity.x = ground.velocity.x * 1.6;
       objObstacle1.velocity.x = objObstacle1.velocity.x * 1.009;
 
@@ -177,23 +181,22 @@ function draw() {
       generate_flyingDino();
 
       // Day and night cycle 
-      dayTime: {
-        //Day and night cycle 
+      time: {
         if (day) {
           //Background will get clearer
           bg -= 25;
           //Moon will start to fade away
-          moonOpacity+= 25;
+          moonOpacity += 25;
           //It will stay clear for some time...
           setTimeout(() => {
             if (bg <= 0) {
               day = false;
             }
           }, 4000)
-
-          break dayTime;
+          // if it's day, then the function ends here, there is no need to continue
+          break time;
         }
-    
+        // if it's night, then the function continues and the code inside the if statement isn't executed
         //Background will get darker
         bg += 25;
         //Moon will get more visible
@@ -224,7 +227,6 @@ function draw() {
 
   // obstacles need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
   obstacleGroup.collider = flyingDinoGroup.collider = cloudsGroup.collider = 'static';
-
   obstacleGroup.life = flyingDinoGroup.life = cloudsGroup.life = Infinity;
 
   restart.show();
