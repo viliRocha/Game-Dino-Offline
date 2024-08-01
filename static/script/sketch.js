@@ -32,6 +32,9 @@ let trex,
     day = true,
     canJump = true,
     onGround = true,
+    isKeyUpPressed = false,
+    isKeyDownPressed = false,
+
 
     // sounds
     jumpingSound,
@@ -153,17 +156,18 @@ function draw() {
     if (ground.x <= -windowWidth - 2200) {
       ground.x = ground.width / 2;
     }
-    //
-    if (kb.presses('down')) {
-      //   (distance, direction, speed)
+
+    // Jump
+    if (canJump && onGround && isKeyUpPressed) {
+        trex.velocity.y = -20;
+        jumpingSound.play();
+    }
+    // Movement
+    if (isKeyDownPressed) {
       trex.changeAnimation("trexDown", trexSprint);
       trex.animation.offset.y = 15;
 
       canJump = false;
-    } else if (kb.presses('up') && canJump == true && onGround) { //Verify if player presses up arrow and Deno is not at sprinting anim to jump
-      trex.velocity.y = -20;
-
-      jumpingSound.play();
     }
 
     // console.log(trex.animation);
@@ -240,13 +244,36 @@ function draw() {
   localStorage.setItem("userRecord", maximumScore); 
 }
 
-// Check if Down arrow was released
-document.body.addEventListener("keyup", e => {
-  if (e.key != "ArrowDown" && e.key != "s") { return }
-  // if the arrow pressed is down or s:
-  trex.changeAnimation("trexWalk", texTrex);
-  trex.animation.offset.y = 0;
-  canJump = true;
+document.addEventListener('keydown', e => {
+  switch (e.key) {
+    case "ArrowUp":
+    case "w":
+    case " ":
+      isKeyUpPressed = true;
+      break
+    case "ArrowDown":
+    case "s":
+      isKeyDownPressed = true;
+      break
+  }
+});
+
+document.addEventListener('keyup', e => {
+    switch (e.key) {
+      case "ArrowUp":
+      case "w":
+      case " ":
+        isKeyUpPressed = false;
+        break
+      case "ArrowDown":
+      case "s":
+        isKeyDownPressed = false;
+        //
+        trex.changeAnimation("trexWalk", texTrex);
+        trex.animation.offset.y = 0;
+        canJump = true;
+        break
+    }
 });
 
 function restartGame() {
@@ -257,7 +284,7 @@ function restartGame() {
 
   endGame = false;
 
-  time = "day";
+  day = true;
   bg = 156;
   moonOpacity = 0;
 
