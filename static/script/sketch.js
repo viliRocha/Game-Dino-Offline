@@ -174,13 +174,10 @@ function draw() {
     generate_clouds();
     generate_cactuses();
 
+    // add a better way to make the game faster
+
     // If player has already been playing for some time && determined frameRate is reached
     if (score >= 300 && frameCount % 60 == 0) {
-      //Make game slightly faster the more player plays
-      trex.velocity.x += trex.velocity.x * 1.6;
-      ground.velocity.x = ground.velocity.x * 1.6;
-      objObstacle1.velocity.x = objObstacle1.velocity.x * 1.009;
-
       // Generate Pterodactylus at random heights for player to dodge
       generate_flyingDino();
 
