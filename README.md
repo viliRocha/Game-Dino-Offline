@@ -3,7 +3,7 @@
 A Google dinosaur game clone that I made using javascript, the p5play library.
 
 # Warn!
-I'm trying to deploy this project to be acessible using github-pages, but this is not completly working so, the github-pages url won't work!
+I'm trying to deploy this project to be acessible using github-pages, but this is not completly working,the github-pages url won't work!
 
 ## Execute the project
 
