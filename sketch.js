@@ -118,7 +118,7 @@ function setup() {
 function draw() {
   background(bg);
 
-  moon.tint = color(255, 255, 255, 255);
+  moon.tint = color(255, 255, 255, moonOpacity);
 
   //Show player score and score record in screen
   fill("white");
@@ -191,11 +191,11 @@ function draw() {
         bg -= 25;
         //Moon will start to fade away
         moonOpacity += 25;
-        if (moon.y != windowHeight/2 - 120) {
-          moon.velocity.y = -0.5;
+        if((moon.y > windowHeight/2 - 120)) {
+          moon.velocity.y = 0;
         }
         else {
-          moon.velocity.y = 0;
+          moon.velocity.y = -0.5;
         }
         //It will stay clear for some time...
         setTimeout(() => {
@@ -210,11 +210,11 @@ function draw() {
         bg += 25;
         //Moon will get more visible
         moonOpacity -= 25;
-        if (moon.y != windowHeight - 100) {
-          moon.velocity.y = 0.5;
+        if((moon.y < windowHeight - 100)) {
+          moon.velocity.y = 0;
         }
         else {
-          moon.velocity.y = 0;
+          moon.velocity.y = 0.5;
         }
         //It will stay dark for some time...
         setTimeout(() => {
@@ -226,7 +226,6 @@ function draw() {
     }
 
     //Trex dies
-    /*
     if (trex.collides(obstacleGroup) || trex.collides(flyingDinoGroup)) {
       gameOverTxt.show();
 
@@ -234,7 +233,6 @@ function draw() {
 
       gameState = "end";
     }
-      */
   }
 
   if (gameState == "end") {
