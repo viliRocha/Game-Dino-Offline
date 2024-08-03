@@ -2,10 +2,6 @@
 
 A Google dinosaur game clone that I made using javascript, the p5play library and also electron.
 
-## Execute the project
-
-to execute the project, use: `go run .` and then open http://localhost:8080 on your browser
-
 ## Game controls
 
 - Up arrow to jump
