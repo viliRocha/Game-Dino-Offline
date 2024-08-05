@@ -185,41 +185,43 @@ function draw() {
       //Generate Pterodactylus at random heights for player to dodge
       generate_flyingDino();
 
-      //Day and night cycle 
-      if (time == "day") {
-        //Background will get clearer
-        bg -= 25;
-        //Moon will start to fade away
-        moonOpacity += 25;
-        if((moon.y > windowHeight/2 - 120)) {
-          moon.velocity.y = 0;
-        }
-        else {
-          moon.velocity.y = -0.5;
-        }
-        //It will stay clear for some time...
-        setTimeout(() => {
-          if (bg > 0) {
-            time = "night";
+      // Day and night cycle 
+      time: {
+        if (day) {
+          //Background will get clearer
+          bg -= 25;
+          //Moon will start to fade away
+          moonOpacity += 25;
+          if((moon.y > windowHeight/2 - 120)) {
+            moon.velocity.y -= 2;
           }
-        }, 8000)
-      }
-      else {
-        // if is not day, then it is night
+          else {
+            moon.velocity.y += 2;
+          }
+          //It will stay clear for some time...
+          setTimeout(() => {
+            if (bg <= 0) {
+                day = false;
+            }
+          }, 8000)
+          // if it's day, then the function ends here, there is no need to continue
+          break time;
+        }
+        // if it's night, then the function continues and the code inside the if statement isn't executed
         //Background will get darker
         bg += 25;
         //Moon will get more visible
         moonOpacity -= 25;
         if((moon.y < windowHeight - 100)) {
-          moon.velocity.y = 0;
+          moon.velocity.y += 2;
         }
         else {
-          moon.velocity.y = 0.5;
+          moon.velocity.y -= 2;
         }
         //It will stay dark for some time...
         setTimeout(() => {
           if (bg >= 156) {
-            time = "day";
+            day = true;
           }
         }, 8000)
       }
