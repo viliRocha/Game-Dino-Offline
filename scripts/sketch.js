@@ -77,7 +77,7 @@ function setup() {
   restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
 
-  moon = new Sprite(windowWidth/2 + 300, windowHeight - 100, 50, 50);
+  moon = new Sprite(windowWidth/2 + 300, -100, 50, 50);
   moon.image = "/assets/moon.webp";
   moon.scale = 0.20;
   moon.collider = 'none';
@@ -192,10 +192,7 @@ function draw() {
           bg -= 25;
           //Moon will start to fade away
           moonOpacity += 25;
-          if((moon.y > windowHeight/2 - 120)) {
-            moon.velocity.y -= 2;
-          }
-          else {
+          if((moon.y < -50)) {
             moon.velocity.y += 2;
           }
           //It will stay clear for some time...
@@ -212,12 +209,10 @@ function draw() {
         bg += 25;
         //Moon will get more visible
         moonOpacity -= 25;
-        if((moon.y < windowHeight - 100)) {
-          moon.velocity.y += 2;
+        if((moon.y > windowHeight + 100)) {
+          moon.y = -100;
         }
-        else {
-          moon.velocity.y -= 2;
-        }
+
         //It will stay dark for some time...
         setTimeout(() => {
           if (bg >= 156) {
@@ -243,6 +238,7 @@ function draw() {
 
     trex.velocity.x = 0;
     ground.velocity.x = 0;
+    moon.velocity.y = 0;
 
     //obstacles need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
     obstacleGroup.collider = 'static';
