@@ -1,6 +1,6 @@
 # Game-Dino-Offline
 
-A Google dinosaur game clone that I made using javascript, the p5play library and also electron.
+A Google Chrome dinosaur game clone that I made using JavaScript, the p5play library and also Electron.
 
 ## Game controls
 
