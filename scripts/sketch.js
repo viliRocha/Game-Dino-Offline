@@ -53,14 +53,6 @@ function preload() {
 }
 
 function setup() {
-  /*let canvas = document.createElement('canvas');
-  canvas.width = windowWidth;
-  canvas.height = windowHeight;
-
-  let ctx = canvas.getContext('2d');
-
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(0, 0, windowWidth, windowHeight);*/
   createCanvas(windowWidth, windowHeight);
 
   //Setting a speed to the frames of the animations
