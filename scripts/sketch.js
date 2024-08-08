@@ -123,12 +123,6 @@ function draw() {
     trex.velocity.y += 1;
   }
 
-  if (score % 200 == 0) {
-    pointsSound.play();
-
-    blink_text();
-  }
-
   // existe um bug que acontece por uma fração de segundo quando um novo chão é renderizado, que o player atravessa o chão
   onGround = Math.round(trex.y) >= Math.round(ground.y - ground.height) - 30;
   // ground y: 754 trex y: 783
@@ -167,6 +161,13 @@ function draw() {
     generate_clouds();
     generate_cactuses();
 
+    //For every 500 more points the player makes the score will blink
+    if(score % 500 == 0) {
+        pointsSound.play();
+        
+        blink_text();
+    }
+
     //If player has already been playing for some time && determined frameRate is reached
     if (score >= 300 && frameCount % 60 == 0) {
       //Make game slightly faster the more player plays
@@ -185,7 +186,7 @@ function draw() {
           //Moon will start to fade away
           moonOpacity += 25;
           if((moon.y < -50)) {
-            moon.velocity.y += 2;
+            moon.velocity.y += 1.7;
           }
           //It will stay clear for some time...
           setTimeout(() => {
@@ -202,7 +203,7 @@ function draw() {
         //Moon will get more visible
         moonOpacity -= 25;
         if((moon.y > windowHeight + 100)) {
-          moon.y = -100;
+          moon.y = -1000;
         }
 
         //It will stay dark for some time...
@@ -285,17 +286,23 @@ document.body.addEventListener("keyup", e => {
   canJump = true;
 });
 
-//Make the score text blink
+//Make the score text start to blink and stop it after 5 times
 function blink_text() {
-  textColor = (textColor === 255) ? 0 : 255;
-  /*
-  if (frameCount % 60 == 0) {
-    textColor = 0; // Set text color to black
-  } 
-  else if (frameCount % 30 == 0) {
-    textColor = 255; // Set text color to white
+  let i = 0;
+  let intervalId;
+  
+  if (i < 6) {
+      intervalId = setInterval(() => {
+          textColor = (textColor === 255) ? 0 : 255;
+          i++;
+  
+          // Verifica se 'i' atingiu o limite
+          if (i >= 6) {
+              clearInterval(intervalId); // Limpa o intervalo
+              i = 0; // Reseta 'i'
+          }
+      }, 300);
   }
-  */
 }
 
 function generate_clouds() {
