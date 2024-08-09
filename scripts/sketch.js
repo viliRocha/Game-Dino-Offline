@@ -31,11 +31,11 @@ let trex,
     textColor = 255,
     time = "day",
     canJump = true,
+    onGround = true,
 
     jumpingSound,
     collideSound,
-    pointsSound,
-    onGround = true;
+    pointsSound;
 
 function preload() {
   //Pterodactylus dinossaur enemy flying animation
