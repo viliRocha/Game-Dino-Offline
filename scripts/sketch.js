@@ -128,7 +128,7 @@ function draw() {
   // ground y: 754 trex y: 783
 
   //if player is alive
-  if (gameState == "start") {
+  if (gameState === "start") {
     score += Math.round(getFrameRate() / 60);
 
     restart.hide();
@@ -151,7 +151,7 @@ function draw() {
 
       canJump = false;
     }
-    else if (kb.presses('up') && canJump == true && onGround) { //Verify if player presses up arrow and Deno is not at sprinting anim to jump
+    else if (kb.presses('up') && canJump === true && onGround) { //Verify if player presses up arrow and Deno is not at sprinting anim to jump
       trex.velocity.y = -20;
 
       jumpingSound.play();
@@ -162,14 +162,14 @@ function draw() {
     generate_cactuses();
 
     //For every 500 more points the player makes the score will blink
-    if(score % 500 == 0) {
+    if(score % 500 === 0) {
         pointsSound.play();
         
         blink_text();
     }
 
     //If player has already been playing for some time && determined frameRate is reached
-    if (score >= 300 && frameCount % 60 == 0) {
+    if (score >= 300 && frameCount % 60 === 0) {
       //Make game slightly faster the more player plays
       trex.velocity.x = trex.velocity.x * 1.6;
       ground.velocity.x = ground.velocity.x * 1.6;
@@ -225,7 +225,7 @@ function draw() {
     }
   }
 
-  if (gameState == "end") {
+  if (gameState === "end") {
     trex.changeAnimation("dead", trexCollide);
 
     trex.velocity.x = 0;
@@ -288,17 +288,16 @@ document.body.addEventListener("keyup", e => {
 //Make the score text start to blink and stop it after 5 times
 function blink_text() {
   let i = 0;
-  let intervalId;
   
   if (i < 6) {
-      intervalId = setInterval(() => {
+      const intervalId = setInterval(() => {
           textColor = (textColor === 255) ? 0 : 255;
           i++;
   
-          // Verifica se 'i' atingiu o limite
+          // Verifies if 'i' reached it's limit
           if (i >= 6) {
-              clearInterval(intervalId); // Limpa o intervalo
-              i = 0; // Reseta 'i'
+              clearInterval(intervalId); // Clears the interval
+              i = 0; // Resets 'i'
           }
       }, 300);
   }
