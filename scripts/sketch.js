@@ -114,9 +114,9 @@ function draw() {
 
   //Show player score and score record in screen
   fill("white");
-  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight - 530);//MaxScore goes before scrore beacuse it will not blink
+  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight/ 2 - 130);//MaxScore goes before scrore beacuse it will not blink
   fill(255, 255, 255, textColor);
-  text(score, windowWidth - 1200, windowHeight - 530);
+  text(score, windowWidth/2 - 500, windowHeight/ 2 - 130);
 
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
@@ -226,7 +226,6 @@ function draw() {
   }
 
   if (gameState == "end") {
-    // bug da lua, continua andando mesmo o jogo tendo acabado ou resetado, sua posição não é resetada
     trex.changeAnimation("dead", trexCollide);
 
     trex.velocity.x = 0;
@@ -250,8 +249,8 @@ function draw() {
 
     document.body.addEventListener("click", () => {
       //reset Dino's position in case it dies in some weird position
-      trex.position.y = 550;
-      trex.position.x = 80;
+      trex.position.x = 150;
+      trex.position.y = windowHeight - 150;
 
       gameState = "start";
 
@@ -308,7 +307,7 @@ function blink_text() {
 function generate_clouds() {
   if (frameCount % 60 != 0) { return }
   //
-  clouds = new Sprite(windowWidth + 30, random(100, 500), 90, 40);
+  clouds = new Sprite(windowWidth + 30, random(windowHeight/2 - 200, windowHeight - 150), 90, 40);
   clouds.image = "/assets/cloud.png";
 
   //Clouds shouldn't collide with anything
@@ -349,7 +348,7 @@ function generate_flyingDino() {
   //Possible heihts for flying dino to spawn in
   texFlyingDino.frameDelay = 14;
 
-  flyngDino = new Sprite(windowWidth + 30, random(300, 542), 50, 50);
+  flyngDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 200), 50, 50);
   flyngDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
