@@ -230,6 +230,7 @@ function draw() {
 
     trex.velocity.x = 0;
     ground.velocity.x = 0;
+      
     moon.velocity.y = 0;
 
     //obstacles need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
@@ -347,7 +348,7 @@ function generate_flyingDino() {
   //Possible heihts for flying dino to spawn in
   texFlyingDino.frameDelay = 14;
 
-  flyngDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 200), 50, 50);
+  flyngDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 230), 50, 50);
   flyngDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
