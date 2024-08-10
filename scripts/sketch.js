@@ -163,18 +163,16 @@ function draw() {
 
     //For every 500 more points the player makes the score will blink
     if(score % 500 === 0) {
-        pointsSound.play();
-        
-        blink_text();
+      pointsSound.play();
+                
+      blink_text();
+          
+      //Make game slightly faster the more player plays
+      //frameRate(120); // Defining the frame rate to 120 FPS(only works on stronger hardware)
     }
 
     //If player has already been playing for some time && determined frameRate is reached
-    if (score >= 300 && frameCount % 60 === 0) {
-      //Make game slightly faster the more player plays
-      trex.velocity.x = trex.velocity.x * 1.6;
-      ground.velocity.x = ground.velocity.x * 1.6;
-      objObstacle1.velocity.x = objObstacle1.velocity.x * 1.009;
-
+    if (score >= 300 && frameCount % 90 === 0) {
       //Generate Pterodactylus at random heights for player to dodge
       generate_flyingDino();
 
@@ -193,7 +191,7 @@ function draw() {
             if (bg <= 0) {
                 day = false;
             }
-          }, 8000)
+          }, 8000);
           // if it's day, then the function ends here, there is no need to continue
           break time;
         }
@@ -211,10 +209,10 @@ function draw() {
           if (bg >= 156) {
             day = true;
           }
-        }, 8000)
+        }, 8000);
       }
     }
-
+    
     //Trex dies
     if (trex.collides(obstacleGroup) || trex.collides(flyingDinoGroup)) {
       gameOverTxt.show();
@@ -224,8 +222,7 @@ function draw() {
       gameState = "end";
     }
   }
-
-  if (gameState === "end") {
+  else if (gameState === "end") {
     trex.changeAnimation("dead", trexCollide);
 
     trex.velocity.x = 0;
