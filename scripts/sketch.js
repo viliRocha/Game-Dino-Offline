@@ -139,7 +139,6 @@ function draw() {
     ground.velocity.x = game_velocity;
 
     //Generate a new ground in front of the other one otherwise player would fall(ground has speed)
-    // with my idea, the ground animation moves and not the object itself, so this wouldn't be necessary
     if (ground.x <= -windowWidth - 2200) {
       ground.x = ground.width / 2;
     }
@@ -262,7 +261,7 @@ function draw() {
       bg = 156;
       moonOpacity = 0;
 
-      //reset the moons position
+      //reset the moon's position
       moon.position.y = -100;
 
       //reset cactuses, clouds and Pterodactylus generation
