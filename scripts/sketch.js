@@ -3,39 +3,40 @@ const savedScore = localStorage.getItem('userRecord') || 0;
 
 // this is a giant list of all the variables used in the sketch, let's make this smaller
 let trex,
-    flyngDino,
-    ground,
-    clouds,
-    moon,
+  flyngDino,
+  ground,
+  clouds,
+  moon,
 
-    texTrex,
-    trexSprint,
-    trexCollide,
-    texFlyingDino,
+  texTrex,
+  trexSprint,
+  trexCollide,
+  texFlyingDino,
 
-    cloudsGroup,
-    obstacleGroup,
-    flyingDinoGroup,
+  cloudsGroup,
+  obstacleGroup,
+  flyingDinoGroup,
 
-    gameOverTxt,
+  gameOverTxt,
 
-    restart,
+  restart,
 
-    objObstacle1,
+  objObstacle1,
 
-    score = 0,
-    maximumScore = savedScore ? savedScore : 0,
-    gameState = "start",
-    bg = 156,
-    moonOpacity = 0,
-    textColor = 255,
-    time = "day",
-    canJump = true,
-    onGround = true,
+  score = 0,
+  maximumScore = savedScore ? savedScore : 0,
+  gameState = "start",
+  bg = 156,
+  moonOpacity = 0,
+  textColor = 255,
+  game_velocity = -8,
+  time = "day",
+  canJump = true,
+  onGround = true,
 
-    jumpingSound,
-    collideSound,
-    pointsSound;
+  jumpingSound,
+  collideSound,
+  pointsSound;
 
 function preload() {
   //Pterodactylus dinossaur enemy flying animation
@@ -69,7 +70,7 @@ function setup() {
   restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
 
-  moon = new Sprite(windowWidth/2 + 300, -100, 50, 50);
+  moon = new Sprite(windowWidth / 2 + 300, -100, 50, 50);
   moon.image = "/assets/moon.webp";
   moon.scale = 0.20;
   moon.collider = 'none';
@@ -114,9 +115,9 @@ function draw() {
 
   //Show player score and score record in screen
   fill("white");
-  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight/ 2 - 130);//MaxScore goes before scrore beacuse it will not blink
+  text("Maximum score: " + maximumScore, windowWidth - 500, windowHeight / 2 - 130);//MaxScore goes before scrore beacuse it will not blink
   fill(255, 255, 255, textColor);
-  text(score, windowWidth/2 - 500, windowHeight/ 2 - 130);
+  text(score, windowWidth / 2 - 500, windowHeight / 2 - 130);
 
   //If player is already up in the air it can't jump
   if (!trex.collides(ground)) {
@@ -135,8 +136,7 @@ function draw() {
     gameOverTxt.hide();
 
     //Give the impression player is moving
-    // my idea: make the ground animation move and not the object itself
-    ground.velocity.x = -8;
+    ground.velocity.x = game_velocity;
 
     //Generate a new ground in front of the other one otherwise player would fall(ground has speed)
     // with my idea, the ground animation moves and not the object itself, so this wouldn't be necessary
@@ -159,60 +159,66 @@ function draw() {
 
     //console.log(trex.animation);
     generate_clouds();
-    generate_cactuses();
 
     //For every 500 more points the player makes the score will blink
-    if(score % 500 === 0) {
+    if (score % 500 === 0) {
       pointsSound.play();
-                
+
       blink_text();
-          
+
       //Make game slightly faster the more player plays
+      game_velocity -= 1.5;
       //frameRate(120); // Defining the frame rate to 120 FPS(only works on stronger hardware)
     }
 
     //If player has already been playing for some time && determined frameRate is reached
-    if (score >= 300 && frameCount % 90 === 0) {
-      //Generate Pterodactylus at random heights for player to dodge
-      generate_flyingDino();
+    if (frameCount % 70 === 0) {
+      
+      if (score <= 300 || score % 3 === 0) {
+        generate_cactuses();
+      }
+      else {
+        //Generate Pterodactylus at random heights for player to dodge
+        generate_flyingDino();
 
-      // Day and night cycle 
-      time: {
-        if (day) {
-          //Background will get clearer
-          bg -= 25;
-          //Moon will start to fade away
-          moonOpacity += 25;
-          if((moon.y < -50)) {
-            moon.velocity.y += 1.7;
-          }
-          //It will stay clear for some time...
-          setTimeout(() => {
-            if (bg <= 0) {
+        // Day and night cycle 
+        time: {
+          if (day) {
+            //Background will get clearer
+            bg -= 25;
+            //Moon will start to fade away
+            moonOpacity += 25;
+            if ((moon.y < -50)) {
+              moon.velocity.y += 1;
+            }
+            //It will stay clear for some time...
+            setTimeout(() => {
+              if (bg <= 0) {
                 day = false;
+              }
+            }, 8000);
+            // if it's day, then the function ends here, there is no need to continue
+            break time;
+          }
+          // if it's night, then the function continues and the code inside the if statement isn't executed
+          //Background will get darker
+          bg += 25;
+          //Moon will get more visible
+          moonOpacity -= 25;
+          if ((moon.y > windowHeight + 100)) {
+            moon.y = -1000;
+          }
+
+          //It will stay dark for some time...
+          setTimeout(() => {
+            if (bg >= 156) {
+              day = true;
             }
           }, 8000);
-          // if it's day, then the function ends here, there is no need to continue
-          break time;
         }
-        // if it's night, then the function continues and the code inside the if statement isn't executed
-        //Background will get darker
-        bg += 25;
-        //Moon will get more visible
-        moonOpacity -= 25;
-        if((moon.y > windowHeight + 100)) {
-          moon.y = -1000;
-        }
-
-        //It will stay dark for some time...
-        setTimeout(() => {
-          if (bg >= 156) {
-            day = true;
-          }
-        }, 8000);
       }
     }
-    
+
     //Trex dies
     if (trex.collides(obstacleGroup) || trex.collides(flyingDinoGroup)) {
       gameOverTxt.show();
@@ -227,7 +233,7 @@ function draw() {
 
     trex.velocity.x = 0;
     ground.velocity.x = 0;
-      
+
     moon.velocity.y = 0;
 
     //obstacles need to stay in place, otherwise player would collide with them and they would go flying away(no gravity)
@@ -256,6 +262,9 @@ function draw() {
       bg = 156;
       moonOpacity = 0;
 
+      //reset the moons position
+      moon.position.y = -100;
+
       //reset cactuses, clouds and Pterodactylus generation
       obstacleGroup.remove();
 
@@ -265,6 +274,9 @@ function draw() {
 
       trex.changeAnimation("trexWalk", texTrex);
       score = 0;
+
+      //Reset the game's speed too
+      game_velocity = -8;
     })
 
     maximumScore = score > maximumScore ? score : maximumScore;
@@ -286,31 +298,32 @@ document.body.addEventListener("keyup", e => {
 //Make the score text start to blink and stop it after 5 times
 function blink_text() {
   let i = 0;
-  
+
   if (i < 6) {
-      const intervalId = setInterval(() => {
-          textColor = (textColor === 255) ? 0 : 255;
-          i++;
-  
-          // Verifies if 'i' reached it's limit
-          if (i >= 6) {
-              clearInterval(intervalId); // Clears the interval
-              i = 0; // Resets 'i'
-          }
-      }, 300);
+    const intervalId = setInterval(() => {
+      textColor = (textColor === 255) ? 0 : 255;
+      i++;
+
+      // Verifies if 'i' reached it's limit
+      if (i >= 6) {
+        clearInterval(intervalId); // Clears the interval
+        i = 0; // Resets 'i'
+      }
+    }, 300);
   }
 }
 
 function generate_clouds() {
   if (frameCount % 60 != 0) { return }
   //
-  clouds = new Sprite(windowWidth + 30, random(windowHeight/2 - 200, windowHeight - 150), 90, 40);
+  clouds = new Sprite(windowWidth + 30, random(windowHeight / 2 - 200, windowHeight - 150), 90, 40);
   clouds.image = "/assets/cloud.png";
 
   //Clouds shouldn't collide with anything
   clouds.collider = 'none';
 
-  clouds.velocity.x = -4;
+  //Clouds are a little slower than the rest of the sprites to make a paralax effect in the background
+  clouds.velocity.x = game_velocity / 2;
   //Desapear after the get off screen, so game keeps performance
   clouds.life = 350;
 
@@ -318,7 +331,6 @@ function generate_clouds() {
 }
 
 function generate_cactuses() {
-  if (frameCount % 70 != 0) { return }
   //
   objObstacle1 = new Sprite(windowWidth + 30, windowHeight - 100, 50, 70);
 
@@ -328,7 +340,7 @@ function generate_cactuses() {
   //This way cactuses can't collide with Pterodactylus but can with the player
   objObstacle1.collider = 'kinematic';
 
-  objObstacle1.velocity.x = -8;
+  objObstacle1.velocity.x = game_velocity;
   //Setting life time to cactuses too
   objObstacle1.life = 180;
 
@@ -351,7 +363,7 @@ function generate_flyingDino() {
   //This way flying dinos can't collide with cactuses but can with the player
   flyngDino.collider = 'kinematic';
 
-  flyngDino.velocity.x = -11;
+  flyngDino.velocity.x = game_velocity;
   flyngDino.life = 180;
 
   //flyngDino.debug = true;
