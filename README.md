@@ -20,7 +20,7 @@ Includes features such as:
 - Sound effects for jumping and dying.
 - Day and night cycle.
 
-## Game images:
+## Game images 🖼️:
 
 ![first_image](./screenshots/image.png)
 
