@@ -1,8 +1,8 @@
-# Game-Dino-Offline
+# Game-Dino-Offline 🦖
 
 A Google Chrome dinosaur game clone that I made using JavaScript, the p5play library and also Electron.
 
-## 🎮 Game controls
+## Game controls 🎮
 
 - Up arrow to jump
 - Down arrow to sprint
