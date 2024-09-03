@@ -1,0 +1,25 @@
+{
+	"name": "Ubuntu",
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [3000, 8080],
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+		  "extensions": [
+				"eamodio.gitlens",
+				"PKief.material-icon-theme",
+                "ritwickdey.LiveServer",
+				"ms-azuretools.vscode-docker"
+			],
+            "settings": {
+                "liveServer.settings.port": 5500,
+                "liveServer.settings.root": "/"
+            }
+		}
+	}
+
+	// Uncomment to connect as root instead.
+	// "remoteUser": "root"
+}
