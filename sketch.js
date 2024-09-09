@@ -71,7 +71,7 @@ function setup() {
 
   //creating a restart button that will only be shown when player dies
   restart = new Sprite(windowWidth / 2 - 50, windowHeight / 2 + 25);
-  restart.image = "restart.png;
+  restart.image = "restart.png";
   restart.scale = 0.2;
   restart.collider = 'none';
 
