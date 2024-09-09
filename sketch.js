@@ -3,7 +3,7 @@ const savedScore = localStorage.getItem('userRecord') || 0;
 
 // this is a giant list of all the variables used in the sketch, let's make this smaller
 let trex,
-  flyngDino,
+  flyingDino,
   ground,
   clouds,
   moon,
@@ -250,6 +250,9 @@ function draw() {
 
     flyingDinoGroup.life = Infinity;
 
+    //  Make so their animation stops in the current frame
+    //flyingDino.animation.stop();
+
     cloudsGroup.collider = 'static';
 
     cloudsGroup.life = Infinity;
@@ -361,16 +364,16 @@ function generate_flyingDino() {
   //Possible heihts for flying dino to spawn in
   texFlyingDino.frameDelay = 14;
 
-  flyngDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 230), 50, 50);
-  flyngDino.addAnimation("flapping_wings", texFlyingDino);
+  flyingDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 230), 50, 50);
+  flyingDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
-  flyngDino.collider = 'kinematic';
+  flyingDino.collider = 'kinematic';
 
-  flyngDino.velocity.x = game_velocity;
-  flyngDino.life = 180;
+  flyingDino.velocity.x = game_velocity;
+  flyingDino.life = 180;
 
-  //flyngDino.debug = true;
+  //flyingDino.debug = true;
 
-  flyingDinoGroup.add(flyngDino);
+  flyingDinoGroup.add(flyingDino);
 }
