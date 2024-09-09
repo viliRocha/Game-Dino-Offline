@@ -251,7 +251,9 @@ function draw() {
     flyingDinoGroup.life = Infinity;
 
     //  Make so their animation stops in the current frame
-    //flyingDino.animation.stop();
+    flyingDinoGroup.forEach(dino => {
+      dino.changeAnimation("stop");
+    });
 
     cloudsGroup.collider = 'static';
 
@@ -361,9 +363,9 @@ function generate_cactuses() {
 }
 
 function generate_flyingDino() {
-  //Possible heihts for flying dino to spawn in
   texFlyingDino.frameDelay = 14;
 
+  //Possible heihts for flying dino to spawn in
   flyingDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 230), 50, 50);
   flyingDino.addAnimation("flapping_wings", texFlyingDino);
 
