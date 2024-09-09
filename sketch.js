@@ -70,13 +70,14 @@ function setup() {
   gameOverTxt.size(450, 45);
 
   //creating a restart button that will only be shown when player dies
-  restart = createImg("restart.png");
-  restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
-  restart.size(50, 50);
+  restart = new Sprite(windowWidth / 2 - 50, windowHeight / 2 + 25);
+  restart.image = "restart.png;
+  restart.scale = 0.2;
+  restart.collider = 'none';
 
   moon = new Sprite(windowWidth / 2 + 300, -100, 50, 50);
   moon.image = "moon.webp";
-  moon.scale = 0.20;
+  moon.scale = 0.2;
   moon.collider = 'none';
 
   trex = new Sprite(150, windowHeight - 150, 100, 100);
@@ -136,7 +137,7 @@ function draw() {
   if (gameState === "start") {
     score += Math.round(getFrameRate() / 60);
 
-    restart.hide();
+    restart.visible = false;
     gameOverTxt.hide();
 
     //Give the impression player is moving
@@ -259,9 +260,9 @@ function draw() {
 
     cloudsGroup.life = Infinity;
 
-    restart.show();
+    restart.visible = true;
 
-    document.body.addEventListener("click", () => {
+    restart.mousePressed(() => {
       //reset Dino's position in case it dies in some weird position
       trex.position.x = 150;
       trex.position.y = windowHeight - 150;
