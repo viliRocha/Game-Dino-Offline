@@ -41,20 +41,20 @@ let trex,
 
 function preload() {
   // Ground image gets preloaded because of its file size
-  texGround = loadImage("/assets/ground2.webp");
+  texGround = loadImage("ground2.webp");
 
   //Pterodactylus dinossaur enemy flying animation
-  texFlyingDino = loadAnimation("/assets/bird1.png", "/assets/bird2.webp");
+  texFlyingDino = loadAnimation("bird1.png", "bird2.webp");
 
   //Trex animations
-  texTrex = loadAnimation("/assets/trex1.png", "/assets/trex2.webp", "/assets/trex3.webp");
-  trexSprint = loadAnimation("/assets/TrexDown1.png", "/assets/TrexDown2.png");
-  trexCollide = loadImage("/assets/collide.webp");
+  texTrex = loadAnimation("trex1.png", "trex2.webp", "trex3.webp");
+  trexSprint = loadAnimation("TrexDown1.png", "TrexDown2.png");
+  trexCollide = loadImage("collide.webp");
 
   //Player sound effects
-  jumpingSound = loadSound("/sounds/jump.wav");
-  collideSound = loadSound("/sounds/collided.wav");
-  pointsSound = loadSound("/sounds/point.wav")
+  jumpingSound = loadSound("jump.wav");
+  collideSound = loadSound("collided.wav");
+  pointsSound = loadSound("point.wav")
 }
 
 function setup() {
@@ -65,17 +65,17 @@ function setup() {
   trexSprint.frameDelay = 10;
 
   //Loading the game over text that will apear when player dies
-  gameOverTxt = createImg("/assets/gameOver.webp");
+  gameOverTxt = createImg("gameOver.webp");
   gameOverTxt.position(windowWidth / 2 - 254, windowHeight / 2 - 35);
   gameOverTxt.size(450, 45);
 
   //creating a restart button that will only be shown when player dies
-  restart = createImg("/assets/restart.png");
+  restart = createImg("restart.png");
   restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
 
   moon = new Sprite(windowWidth / 2 + 300, -100, 50, 50);
-  moon.image = "/assets/moon.webp";
+  moon.image = "moon.webp";
   moon.scale = 0.20;
   moon.collider = 'none';
 
@@ -326,7 +326,7 @@ function blink_text() {
 function generate_clouds() {
   //
   clouds = new Sprite(windowWidth + 30, random(windowHeight / 2 - 200, windowHeight - 150), 90, 40);
-  clouds.image = "/assets/cloud.png";
+  clouds.image = "cloud.png";
 
   //Clouds shouldn't collide with anything
   clouds.collider = 'none';
@@ -357,7 +357,7 @@ function generate_cactuses() {
   //randomize which cactus will be generated
   const rng = Math.round(random(1, 6));
   // set image
-  objObstacle1.image = `/assets/obstacle${rng}.png`;
+  objObstacle1.image = `obstacle${rng}.png`;
   objObstacle1.image.offset.y = rng <= 3 ? 13 : 0;
   //objObstacle1.debug = true;
 }
