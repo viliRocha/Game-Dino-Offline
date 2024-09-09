@@ -70,9 +70,9 @@ function setup() {
   gameOverTxt.size(450, 45);
 
   //creating a restart button that will only be shown when player dies
-  restart = new Sprite(windowWidth / 2 - 50, windowHeight / 2 + 25);
+  restart = createSprite(windowWidth / 2 - 50, windowHeight / 2 + 30);
   restart.image = "restart.png";
-  restart.scale = 0.2;
+  restart.scale = 0.7;
   restart.collider = 'none';
 
   moon = new Sprite(windowWidth / 2 + 300, -100, 50, 50);
@@ -262,7 +262,7 @@ function draw() {
 
     restart.visible = true;
 
-    restart.mousePressed(() => {
+    if (mouse.presses()) {
       //reset Dino's position in case it dies in some weird position
       trex.position.x = 150;
       trex.position.y = windowHeight - 150;
@@ -288,7 +288,7 @@ function draw() {
 
       //Reset the game's speed too
       game_velocity = -8;
-    })
+    }
 
     maximumScore = score > maximumScore ? score : maximumScore;
 
