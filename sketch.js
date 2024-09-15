@@ -251,8 +251,8 @@ function draw() {
     flyingDinoGroup.life = Infinity;
 
     //  Make so their animation stops in the current frame
-    flyingDinoGroup.forEach(dino => {
-      dino.changeAnimation("stop");
+    flyingDinoGroup.forEach(bird => {
+      bird.changeAnimation("stop");
     });
 
     cloudsGroup.collider = 'static';
@@ -334,7 +334,7 @@ function generate_clouds() {
   //Clouds are a little slower than the rest of the sprites to make a paralax effect in the background
   clouds.velocity.x = game_velocity / 2;
   //Desapear after the get off screen, so game keeps performance
-  clouds.life = 350;
+  clouds.life = 400;
 
   cloudsGroup.add(clouds);
 }
@@ -351,7 +351,7 @@ function generate_cactuses() {
 
   objObstacle1.velocity.x = game_velocity;
   //Setting life time to cactuses too
-  objObstacle1.life = 180;
+  objObstacle1.life = 220;
 
   obstacleGroup.add(objObstacle1);
   //randomize which cactus will be generated
@@ -367,13 +367,14 @@ function generate_flyingDino() {
 
   //Possible heihts for flying dino to spawn in
   flyingDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 230), 50, 50);
+  flyingDino.addAnimation("stop", "bird2.webp");
   flyingDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
   flyingDino.collider = 'kinematic';
 
   flyingDino.velocity.x = game_velocity;
-  flyingDino.life = 180;
+  flyingDino.life = 220;
 
   //flyingDino.debug = true;
 
