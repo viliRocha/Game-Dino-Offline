@@ -128,7 +128,7 @@ function draw() {
     trex.velocity.y += 1;
   }
 
-  // existe um bug que acontece por uma fração de segundo quando um novo chão é renderizado, que o player atravessa o chão
+  // there was a bug that happens for a fraction of a second when a new floor is rendered, which causes the player to cross the floor
   onGround = Math.round(trex.y) >= Math.round(ground.y - ground.height) - 30;
   // ground y: 754 trex y: 783
 
@@ -250,9 +250,10 @@ function draw() {
 
     flyingDinoGroup.life = Infinity;
 
-    //  Make so their animation stops in the current frame
+    //  Make so their animation stops in the correct frame
     flyingDinoGroup.forEach(bird => {
-      bird.changeAnimation("stop");
+      let currentFrame = bird.animation.getFrame(); // Gets the current frame
+      bird.animation.setFrame(currentFrame); // Stops in the current frame
     });
 
     cloudsGroup.collider = 'static';
@@ -334,7 +335,7 @@ function generate_clouds() {
   //Clouds are a little slower than the rest of the sprites to make a paralax effect in the background
   clouds.velocity.x = game_velocity / 2;
   //Desapear after the get off screen, so game keeps performance
-  clouds.life = 400;
+  clouds.life = 500;
 
   cloudsGroup.add(clouds);
 }
@@ -351,7 +352,7 @@ function generate_cactuses() {
 
   objObstacle1.velocity.x = game_velocity;
   //Setting life time to cactuses too
-  objObstacle1.life = 220;
+  objObstacle1.life = 300;
 
   obstacleGroup.add(objObstacle1);
   //randomize which cactus will be generated
@@ -374,7 +375,7 @@ function generate_flyingDino() {
   flyingDino.collider = 'kinematic';
 
   flyingDino.velocity.x = game_velocity;
-  flyingDino.life = 220;
+  flyingDino.life = 300;
 
   //flyingDino.debug = true;
 
