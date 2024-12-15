@@ -64,12 +64,12 @@ function setup() {
   texTrex.frameDelay = 5;
   trexSprint.frameDelay = 10;
 
-  //Loading the game over text that will apear when player dies
-  gameOverTxt = createImg("gameOver.webp");
+  //Loading the game over text that will appear when player dies
+  gameOverTxt = createImg("gameOver.webp", "Game Over");
   gameOverTxt.position(windowWidth / 2 - 254, windowHeight / 2 - 35);
   gameOverTxt.size(450, 45);
 
-  //creating a restart button that will only be shown when player dies
+  //Creating a restart button that will only be shown when player dies
   restart = createSprite(windowWidth / 2 - 50, windowHeight / 2 + 60);
   restart.image = "restart.png";
   restart.scale = 0.7;
@@ -253,8 +253,7 @@ function draw() {
 
     //  Make so their animation stops in the correct frame
     flyingDinoGroup.forEach(bird => {
-      let currentFrame = bird.animation.getFrame(); // Gets the current frame
-      bird.animation.setFrame(currentFrame); // Stops in the current frame
+      bird.animation.playing = false;// Stops in the current frame
     });
 
     cloudsGroup.collider = 'static';
@@ -369,7 +368,6 @@ function generate_flyingDino() {
 
   //Possible heihts for flying dino to spawn in
   flyingDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 230), 50, 50);
-  flyingDino.addAnimation("stop", "bird2.webp");
   flyingDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
