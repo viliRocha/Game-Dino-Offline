@@ -103,7 +103,7 @@ function setup() {
   //This way I can set the flyingDinosaurs height as low as I want
   ground.collider = 'kinematic';
 
-  ground.debug = true;
+  //ground.debug = true;
 
   //Defining font style
   textFont('Fira Code', 27);
@@ -368,7 +368,6 @@ function generate_flyingDino() {
 
   //Possible heihts for flying dino to spawn in
   flyingDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 230), 50, 50);
-  flyingDino.addAnimation("stop", "/assets/bird2.webp");
   flyingDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
