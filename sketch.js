@@ -64,15 +64,16 @@ function setup() {
   texTrex.frameDelay = 5;
   trexSprint.frameDelay = 10;
 
-  //Loading the game over text that will apear when player dies
-  gameOverTxt = createImg("/assets/gameOver.webp");
+  // Loading the game over text that will appear when player dies
+  gameOverTxt = createImg("/assets/gameOver.webp", "Game Over");
   gameOverTxt.position(windowWidth / 2 - 254, windowHeight / 2 - 35);
   gameOverTxt.size(450, 45);
 
-  //creating a restart button that will only be shown when player dies
-  restart = createImg("/assets/restart.png");
+  // Creating a restart button that will only be shown when player dies
+  restart = createImg("/assets/restart.png", "Restart");
   restart.position(windowWidth / 2 - 50, windowHeight / 2 + 25);
   restart.size(50, 50);
+
 
   moon = new Sprite(windowWidth / 2 + 300, -100, 50, 50);
   moon.image = "/assets/moon.webp";
@@ -102,7 +103,7 @@ function setup() {
   //This way I can set the flyingDinosaurs height as low as I want
   ground.collider = 'kinematic';
 
-  //ground.debug = true;
+  ground.debug = true;
 
   //Defining font style
   textFont('Fira Code', 27);
@@ -143,7 +144,7 @@ function draw() {
     ground.velocity.x = game_velocity;
 
     //Generate a new ground in front of the other one otherwise player would fall(ground has speed)
-    if (ground.x <= -windowWidth - 2200) {
+    if (ground.x <= -windowWidth - 1800) {
       ground.x = ground.width / 2;
     }
     //
@@ -252,8 +253,7 @@ function draw() {
 
     //  Make so their animation stops in the correct frame
     flyingDinoGroup.forEach(bird => {
-      let currentFrame = bird.animation.getFrame(); // Gets the current frame
-      bird.animation.setFrame(currentFrame); // Stops in the current frame
+      bird.animation.playing = false;// Stops in the current frame
     });
 
     cloudsGroup.collider = 'static';
@@ -368,7 +368,7 @@ function generate_flyingDino() {
 
   //Possible heihts for flying dino to spawn in
   flyingDino = new Sprite(windowWidth + 30, random(windowHeight - 80, windowHeight - 230), 50, 50);
-  flyingDino.addAnimation("stop", "bird2.webp");
+  flyingDino.addAnimation("stop", "/assets/bird2.webp");
   flyingDino.addAnimation("flapping_wings", texFlyingDino);
 
   //This way flying dinos can't collide with cactuses but can with the player
