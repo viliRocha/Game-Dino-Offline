@@ -3,26 +3,26 @@ const savedScore = localStorage.getItem('userRecord') || 0;
 
 // this is a giant list of all the variables used in the sketch, let's make this smaller
 let trex,
-  flyingDino,
-  ground,
-  clouds,
-  moon,
+    flyingDino,
+    ground,
+    clouds,
+    moon,
 
-  texGround,
-  texTrex,
-  trexSprint,
-  trexCollide,
-  texFlyingDino,
+    texGround,
+    texTrex,
+    trexSprint,
+    trexCollide,
+    texFlyingDino,
 
-  cloudsGroup,
-  obstacleGroup,
-  flyingDinoGroup,
+    cloudsGroup,
+    obstacleGroup,
+    flyingDinoGroup,
 
-  gameOverTxt,
+    gameOverTxt,
 
-  restart,
+    restart,
 
-  objObstacle1,
+    objObstacle1,
 
   score = 0,
   maximumScore = savedScore ? savedScore : 0,
@@ -54,7 +54,7 @@ function preload() {
   //Player sound effects
   jumpingSound = loadSound("/sounds/jump.wav");
   collideSound = loadSound("/sounds/collided.wav");
-  pointsSound = loadSound("/sounds/point.wav")
+  pointsSound = loadSound("/sounds/point.wav");
 }
 
 function setup() {
@@ -100,6 +100,8 @@ function setup() {
   //Removing friction between Trex and ground
   ground.friction = 0;
 
+  //ground.setCollider('rectangle', 0, 0, ground.width, ground.height); // Sets the collider to the same proportions of the image
+
   //This way I can set the flyingDinosaurs height as low as I want
   ground.collider = 'kinematic';
 
@@ -130,7 +132,7 @@ function draw() {
   }
 
   // there was a bug that happens for a fraction of a second when a new floor is rendered, which causes the player to cross the floor
-  onGround = Math.round(trex.y) >= Math.round(ground.y - ground.height) - 30;
+  onGround = Math.round(trex.y + trex.height / 2) >= Math.round(ground.y - ground.height);
   // ground y: 754 trex y: 783
 
   //if player is alive
@@ -140,11 +142,17 @@ function draw() {
     restart.hide();
     gameOverTxt.hide();
 
+    flyingDinoGroup.forEach(bird => {
+      bird.animation.playing = true;
+    });
+
     //Give the impression player is moving
     ground.velocity.x = game_velocity;
 
+    //console.log(ground.position.x)
+
     //Generate a new ground in front of the other one otherwise player would fall(ground has speed)
-    if (ground.x <= -windowWidth - 1800) {
+    if (ground.position.x <= -4200) {
       ground.x = ground.width / 2;
     }
     //
@@ -273,8 +281,10 @@ function draw() {
       bg = 156;
       moonOpacity = 0;
 
-      //reset the moon's position
+      //Reset moon's and ground's position
       moon.position.y = -100;
+
+      ground.position.x = 0;
 
       //reset cactuses, clouds and Pterodactylus generation
       obstacleGroup.remove();
